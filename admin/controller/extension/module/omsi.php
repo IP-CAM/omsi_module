@@ -44,6 +44,12 @@ class ControllerExtensionModuleOmsi extends Controller {
         $this->response->setOutput($htmlOutput);
     }
 
+    public function testOmsi() {
+        $this->load->library('omsi');
+        $obj_omsi = Omsi::get_instance($this->registry);
+        $obj_omsi->updateProduct();
+    }
+
     public function validate() {}
 
     public function install() {}
