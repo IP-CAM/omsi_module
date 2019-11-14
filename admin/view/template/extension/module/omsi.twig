@@ -83,6 +83,7 @@
           <input type="hidden"name="module_id" value="{{ module_id }}" />
         </form>
         <button id="loadAssortment"> Load Assortment </button>
+        <input name="productModel">
       </div>
     </div>
   </div>
@@ -91,11 +92,11 @@
 
 <script type="text/javascript"><!--
     $('#loadAssortment').on('click', function() {
+        var productModel = $('input[name=\'productModel\']').val();
         $.ajax({
-            url: 'index.php?route=extension/module/omsi&product_id=1&user_token={{ user_token }}',
+            url: 'index.php?route=extension/module/omsi&product_model=' + encodeURIComponent(productModel) + '&user_token={{ user_token }}',
             type: 'get',
             dataType: 'json',
-            referer: '-',
             /*data: $("#form-review").serialize(),*/
             success: function(json) {
 

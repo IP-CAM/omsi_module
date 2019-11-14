@@ -11,13 +11,12 @@ class ControllerExtensionModuleOmsi extends Controller {
     public function index() {
         echo "index start" .PHP_EOL;
         echo getcwd() . "\n";
-        if (isset($this->request->get['product_id'])) {
+        if (isset($this->request->get['product_model'])) {
             echo "OK" .PHP_EOL;
             $this->log->write("OK");
-            $this->testOmsi();
+            $this->testOmsi($this->request->get['product_model']);
         } else {
             echo "Achtung" .PHP_EOL;
-            var_dump($this->request);
             $this->log->write("Achtung");
             if (!isset($this->request->get['module_id'])) {
                 $module_id = $this->addModule();
@@ -55,10 +54,10 @@ class ControllerExtensionModuleOmsi extends Controller {
         $this->response->setOutput($htmlOutput);
     }
 
-    public function testOmsi() {
+    public function testOmsi($model) {
         $this->load->library('omsi');
         $obj_omsi = Omsi::get_instance($this->registry);
-        $obj_omsi->updateProduct();
+        $obj_omsi->testReadProductName($model);
         echo "updateProduct" .PHP_EOL;
         $json = array();
 
