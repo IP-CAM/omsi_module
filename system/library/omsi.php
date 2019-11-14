@@ -1,8 +1,8 @@
 <?php
-  require_once 'util/globalConstants.php';
-  require_once 'util/mysql.php';
-  require_once 'helper/ProductsDbHelper.php';
-  require_once 'loader/productsLoader.php';
+  require_once dirname(__FILE__). '/omsi/util/globalConstants.php';
+  require_once dirname(__FILE__). '/omsi/util/mysql.php';
+  require_once dirname(__FILE__). '/omsi/helper/ProductsDbHelper.php';
+  require_once dirname(__FILE__). '/omsi/loader/productsLoader.php';
 
   class Omsi
   {
@@ -19,12 +19,20 @@
           return static::$instance;
       }
 
-      protected function __construct() {
+      public function __construct() {
 
       }
 
       public function updateProduct($model) {
           $productsLoader = new ProductsLoader();
           $productsLoader->loadProduct('002223');
+      }
+
+      public function createCustomerOrder() {
+
+      }
+
+      public function ifCustomerExists($name, $surname) {
+
       }
   }

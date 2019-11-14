@@ -1,6 +1,6 @@
 <?php
-require_once('util/sqlConstants.php');
-require_once 'util/log4php/Logger.php';
+require_once dirname(__FILE__). '/../util/sqlConstants.php';
+require_once dirname(__FILE__). '/../util/log4php/Logger.php';
 
 class DbHelperAbstract {
     private $db;

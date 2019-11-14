@@ -1,6 +1,6 @@
 <?php
-include_once 'model/attribute.php';
-include_once('processing/dbHelperAbstract.php');
+include_once dirname(__FILE__). '/../model/attribute.php';
+include_once dirname(__FILE__).  '/dbHelperAbstract.php';
 
 class ProductsDbHelper extends DbHelperAbstract {
 

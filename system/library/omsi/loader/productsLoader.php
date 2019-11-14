@@ -1,4 +1,6 @@
 <?php
+include_once dirname(__FILE__).  '/baseLoader.php';
+
 class ProductsLoader extends BaseLoader {
 
     public function loadProduct($productModel) {

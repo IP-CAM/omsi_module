@@ -79,12 +79,31 @@
               </select>
             </div>
           </div>
-          <button id="loadAssortment"> Load Assortment </button>
+          <H2 id="testText"> </H2>
           <input type="hidden"name="module_id" value="{{ module_id }}" />
         </form>
+        <button id="loadAssortment"> Load Assortment </button>
       </div>
     </div>
   </div>
 </div>
 {{ footer }}
+
+<script type="text/javascript"><!--
+    $('#loadAssortment').on('click', function() {
+        $.ajax({
+            url: 'index.php?route=extension/module/omsi&product_id=1&user_token={{ user_token }}',
+            type: 'get',
+            dataType: 'json',
+            referer: '-',
+            /*data: $("#form-review").serialize(),*/
+            success: function(json) {
+
+                if (json['error']) {
+
+                }
+            }
+        });
+    });
+    //--></script>
 

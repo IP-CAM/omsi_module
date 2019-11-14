@@ -9,11 +9,22 @@ class ControllerExtensionModuleOmsi extends Controller {
     ];
 
     public function index() {
-        if (!isset($this->request->get['module_id'])) {
-            $module_id = $this->addModule();
-            $this->response->redirect($this->url->link('extension/module/omsi','&user_token='.$this->session->data['user_token'].'&module_id='.$module_id));
+        echo "index start" .PHP_EOL;
+        echo getcwd() . "\n";
+        if (isset($this->request->get['product_id'])) {
+            echo "OK" .PHP_EOL;
+            $this->log->write("OK");
+            $this->testOmsi();
         } else {
-            $this->editModule($this->request->get['module_id']);
+            echo "Achtung" .PHP_EOL;
+            var_dump($this->request);
+            $this->log->write("Achtung");
+            if (!isset($this->request->get['module_id'])) {
+                $module_id = $this->addModule();
+                $this->response->redirect($this->url->link('extension/module/omsi', '&user_token=' . $this->session->data['user_token'] . '&module_id=' . $module_id));
+            } else {
+                $this->editModule($this->request->get['module_id']);
+            }
         }
     }
 
@@ -27,7 +38,7 @@ class ControllerExtensionModuleOmsi extends Controller {
 
     protected function editModule($module_id) {
         $data = array();
-
+        $data['user_token'] = $this->session->data['user_token'];
         $this->load->language('extension/module/omsi');
         $this->document->setTitle($this->language->get('heading_title'));
 
@@ -48,6 +59,13 @@ class ControllerExtensionModuleOmsi extends Controller {
         $this->load->library('omsi');
         $obj_omsi = Omsi::get_instance($this->registry);
         $obj_omsi->updateProduct();
+        echo "updateProduct" .PHP_EOL;
+        $json = array();
+
+        $json['success'] = 'success';
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
     }
 
     public function validate() {}
