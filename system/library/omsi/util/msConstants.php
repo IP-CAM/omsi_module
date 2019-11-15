@@ -39,6 +39,8 @@
     define("URL_GET_GROUP", "/entity/productfolder");
     define("URL_GET_VARIANTS", "/entity/variant");
     define("URL_GET_ALL_VARIANTS_TYPES", "/entity/variant/metadata");
+    define("URL_GET_ALL_CUSTOMERS", "/entity/counterparty");
+
 
     // URL params
     define("URL_PARAM_LIMIT", "limit=100");
@@ -46,4 +48,5 @@
     define("URL_PARAM_UPDATED_FROM", "updatedFrom=");
     define("URL_PARAM_FILTER", "filter=");
     define("URL_PARAM_CODE", "code=");
+    define("URL_PARAM_SEARCH", "search=");
 ?>

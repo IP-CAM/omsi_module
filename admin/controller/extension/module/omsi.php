@@ -58,6 +58,8 @@ class ControllerExtensionModuleOmsi extends Controller {
         $this->load->library('omsi');
         $obj_omsi = Omsi::get_instance($this->registry);
         $obj_omsi->testReadProductName($model);
+        $obj_omsi->testGetCustomerByName('Татьяна');
+        $obj_omsi->testCreateCustomer('Татьяна', 'Ааап', 'test@test.ru');
         echo "updateProduct" .PHP_EOL;
         $json = array();
 

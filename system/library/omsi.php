@@ -2,6 +2,7 @@
 require_once dirname(__FILE__) . '/omsi/util/globalConstants.php';
 require_once dirname(__FILE__) . '/omsi/helper/ProductsDbHelper.php';
 require_once dirname(__FILE__) . '/omsi/loader/productsLoader.php';
+require_once dirname(__FILE__) . '/omsi/services/customerService.php';
 
 class Omsi {
     private static $instance;
@@ -52,6 +53,30 @@ class Omsi {
         } catch (Exception $e) {
             echo "Pi4al'ka. :( ";
             $this->log->write("Pi4al'ka. :( ");
+        }
+    }
+
+    public function testGetCustomerByName($name) {
+
+            $service = new customerService();
+            $resultArray = $service->getCustomersByName($name);
+            if (count($resultArray)) {
+                echo "Great. Here is result";
+                var_dump($resultArray);
+            } else {
+                echo "No result";
+            }
+    }
+
+    public function testCreateCustomer($name, $surname, $email) {
+
+        $service = new customerService();
+        $resultArray = $service->createCustomer($name, $surname, $email);
+        if (count($resultArray)) {
+            echo "Great. Here is result";
+            var_dump($resultArray);
+        } else {
+            echo "No result";
         }
     }
 }

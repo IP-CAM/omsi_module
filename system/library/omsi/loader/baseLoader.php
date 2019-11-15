@@ -19,6 +19,25 @@ class BaseLoader {
         return $resArr;
     }
 
+    protected function post($url, $data) {
+        $data_string = json_encode($data);
+        $this->curlInit($url);
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data_string);
+        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data_string))
+        );
+
+        $response = curl_exec($this->curl);
+        $resArr = json_decode($response, true);
+
+        curl_close($this->curl);
+
+        return $resArr;
+    }
+
     private function curlInit($url) {
         $this->curl = curl_init();
 
@@ -32,6 +51,10 @@ class BaseLoader {
 
         curl_setopt($this->curl, CURLOPT_URL, $url);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
+    }
+
+    private function curlInitPost($url) {
+
     }
 
     public function loadImage($url, $saveTo){
