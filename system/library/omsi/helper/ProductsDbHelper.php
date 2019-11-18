@@ -1,8 +1,8 @@
 <?php
-include_once dirname(__FILE__). '/../model/attribute.php';
-include_once dirname(__FILE__).  '/dbHelperAbstract.php';
+include_once dirname(__FILE__) . '/../model/Attribute.php';
+include_once dirname(__FILE__) . '/AbstractDbHelper.php';
 
-class ProductsDbHelper extends DbHelperAbstract {
+class ProductsDbHelper extends AbstractDbHelper {
 
     public function getAllProductsWithNames() {
         $result = $this->getDb()->query(SqlConstants::GET_ALL_PRODUCTS_IDS_WITH_NAMES);

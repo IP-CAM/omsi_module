@@ -1,7 +1,7 @@
 <?php
-include_once('processing/dbHelperAbstract.php');
+include_once('processing/AbstractDbHelper.php');
 
-class SeoUrlsDbHelper extends DbHelperAbstract {
+class SeoUrlsDbHelper extends AbstractDbHelper {
     public function insertSeoUrl($id, $name, $isCategory) {
 
         $query = $isCategory ? 'category_id=' : 'product_id=';

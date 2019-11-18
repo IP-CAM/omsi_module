@@ -1,7 +1,7 @@
 <?php
-require_once dirname(__FILE__) . '/../util/msConstants.php';
-require_once dirname(__FILE__) . '/../loader/baseLoader.php';
-require_once dirname(__FILE__) . '/../helper/customersDbHelper.php';
+require_once dirname(__FILE__) . '/../util/MsConstants.php';
+require_once dirname(__FILE__) . '/../loader/BaseLoader.php';
+require_once dirname(__FILE__) . '/../helper/CustomersDbHelper.php';
 
 class customerService extends BaseLoader {
 

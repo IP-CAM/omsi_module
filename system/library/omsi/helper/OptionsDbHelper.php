@@ -1,7 +1,7 @@
 <?php
-include_once('processing/dbHelperAbstract.php');
+include_once('processing/AbstractDbHelper.php');
 
-class OptionsDbHelper extends DbHelperAbstract {
+class OptionsDbHelper extends AbstractDbHelper {
 
     public function __construct($db) {
         parent::__construct($db);

@@ -15,4 +15,10 @@ class ControllerExtensionModuleOmsi extends Controller {
         $obj_omsi = Omsi::get_instance($this->registry);
         $obj_omsi->сreateCustomer($data[0]);
     }
+
+    public function addOrderToMoySklad($eventRoute, &$data) {
+        echo "Order data:" . PHP_EOL;
+        echo "<pre>" . var_dump($data) . "</pre>";
+        $this->logger->write("as");
+    }
 }

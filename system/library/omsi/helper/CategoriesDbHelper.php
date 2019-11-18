@@ -1,7 +1,7 @@
 <?php
-include_once('processing/dbHelperAbstract.php');
+include_once('processing/AbstractDbHelper.php');
 
-class CategoriesDbHelper extends DbHelperAbstract {
+class CategoriesDbHelper extends AbstractDbHelper {
 
     public function getAllCategoriesWithNames() {
         $result = $this->getDb()->query(SqlConstants::GET_ALL_CATEGORIES_IDS_WITH_NAMES);

@@ -1,5 +1,5 @@
 <?php
-include_once dirname(__FILE__).  '/baseLoader.php';
+include_once dirname(__FILE__) . '/BaseLoader.php';
 
 class ProductsLoader extends BaseLoader {
 

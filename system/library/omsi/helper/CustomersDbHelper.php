@@ -1,7 +1,7 @@
 <?php
-include_once dirname(__FILE__). '/dbHelperAbstract.php';
+include_once dirname(__FILE__) . '/AbstractDbHelper.php';
 
-class CustomersDbHelper extends DbHelperAbstract {
+class CustomersDbHelper extends AbstractDbHelper {
 
     public function createCustomerAssociation($customerId, $customerMsUuid, $customerVersion) {
         $params = array();

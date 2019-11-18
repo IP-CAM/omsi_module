@@ -11,10 +11,16 @@ class ControllerExtensionModuleOmsi extends Controller {
     public function index() {
         echo "index start" .PHP_EOL;
         echo getcwd() . "\n";
+
+        $this->load->library('omsi');
+        $obj_omsi = Omsi::get_instance($this->registry);
+
         if (isset($this->request->get['product_model'])) {
             echo "OK" .PHP_EOL;
             $this->log->write("OK");
             $this->testOmsi($this->request->get['product_model']);
+        } else if (isset($this->request->get['deleteAllProducts'])) {
+            $obj_omsi->testOmsi($this->request->get['product_model']);
         } else {
             echo "Achtung" .PHP_EOL;
             $this->log->write("Achtung");
@@ -79,13 +85,15 @@ class ControllerExtensionModuleOmsi extends Controller {
 
     public function install() {
         $this->load->model("setting/event");
-        $this->model_setting_event->addEvent("omsi", "catalog/model/account/customer/addCustomer/after", "Extension/Module/Omsi/addCustomerToMoySklad");
+        $this->model_setting_event->addEvent("omsiAddCustomer", "catalog/model/account/customer/addCustomer/after", "Extension/Module/Omsi/addCustomerToMoySklad");
+        $this->model_setting_event->addEvent("omsiAddOrder", "catalog/model/checkout/order/addOrderHistory/before", "Extension/Module/Omsi/addOrderToMoySklad");
 
         // Create necessary tables
     }
 
     public function uninstall() {
         $this->load->model("setting/event");
-        $this->model_setting_event->deleteEventByCode("omsi");
+        $this->model_setting_event->deleteEventByCode("omsiAddCustomer");
+        $this->model_setting_event->deleteEventByCode("omsiAddOrder");
     }
 }
