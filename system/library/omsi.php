@@ -3,6 +3,7 @@ require_once dirname(__FILE__) . '/omsi/util/globalConstants.php';
 require_once dirname(__FILE__) . '/omsi/helper/ProductsDbHelper.php';
 require_once dirname(__FILE__) . '/omsi/loader/ProductsLoader.php';
 require_once dirname(__FILE__) . '/omsi/services/CustomerService.php';
+require_once dirname(__FILE__) . '/omsi/services/ProductsService.php';
 
 class Omsi {
     private static $instance;
@@ -99,5 +100,7 @@ class Omsi {
 
     public function deleteAllProducts() {
         $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
+        $productsService = new ProductsService($db);
+        $productsService->deleteAllProducts();
     }
 }

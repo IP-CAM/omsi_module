@@ -1,5 +1,5 @@
 <?php
-include_once('processing/AbstractDbHelper.php');
+require_once dirname(__FILE__) . '/AbstractDbHelper.php';
 
 class CategoriesDbHelper extends AbstractDbHelper {
 

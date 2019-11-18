@@ -20,7 +20,7 @@ class ControllerExtensionModuleOmsi extends Controller {
             $this->log->write("OK");
             $this->testOmsi($this->request->get['product_model']);
         } else if (isset($this->request->get['deleteAllProducts'])) {
-            $obj_omsi->testOmsi($this->request->get['product_model']);
+            $obj_omsi->deleteAllProducts();
         } else {
             echo "Achtung" .PHP_EOL;
             $this->log->write("Achtung");
