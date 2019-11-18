@@ -8,7 +8,7 @@ class Omsi {
     private static $instance;
     private $db;
     private $registry;
-    private $log;
+    //private $log;
 
     /**
      * @param object $registry Registry Object
@@ -23,7 +23,7 @@ class Omsi {
 
     public function __construct($registry) {
         $this->registry = $registry;
-        $this->log = $registry->get('log');
+       // $this->log = $registry->get('log');
     }
 
     public function updateProduct($model) {
@@ -68,15 +68,32 @@ class Omsi {
             }
     }
 
-    public function testCreateCustomer($name, $surname, $email) {
+    public function сreateCustomer($сustomerData) {
+        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
+        $service = new customerService($db);
 
-        $service = new customerService();
-        $resultArray = $service->createCustomer($name, $surname, $email);
-        if (count($resultArray)) {
-            echo "Great. Here is result";
-            var_dump($resultArray);
-        } else {
-            echo "No result";
+        $lastName = $сustomerData['lastname'];
+
+        $foundCustomers = $service->getCustomersByName($lastName);
+        var_dump($foundCustomers);
+
+        if (count($foundCustomers) == 0) {
+            echo "Customer with lastname " . $lastName . " was not found in MoySklad. Creating...";
+           // $this->log->write("Customer with lastname " . $lastName . " was not found in MoySklad. Creating...");
+
+            $resultArray = $service->createCustomer($сustomerData['firstname'], $сustomerData['lastname'],
+                $сustomerData['email'], $сustomerData['telephone']);
+            if (count($resultArray)) {
+                echo "Great. Here is result";
+                var_dump($resultArray);
+            } else {
+                echo "No result";
+            }
+        } else if (count($foundCustomers) == 1) {
+            echo "Customer with lastname " . $lastName . " was found in MoySklad. Linking...";
+           // $this->log->write("Customer with lastname " . $lastName . " was found in MoySklad. Linking...");
         }
+
+        $this->log->write(var_export($foundCustomers));
     }
 }

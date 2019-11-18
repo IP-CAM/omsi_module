@@ -59,7 +59,7 @@ class ControllerExtensionModuleOmsi extends Controller {
         $obj_omsi = Omsi::get_instance($this->registry);
         $obj_omsi->testReadProductName($model);
         $obj_omsi->testGetCustomerByName('Татьяна');
-        $obj_omsi->testCreateCustomer('Татьяна', 'Ааап', 'test@test.ru');
+        $obj_omsi->сreateCustomer('Татьяна', 'Ааап', 'test@test.ru');
         echo "updateProduct" .PHP_EOL;
         $json = array();
 
@@ -69,11 +69,23 @@ class ControllerExtensionModuleOmsi extends Controller {
         $this->response->setOutput(json_encode($json));
     }
 
+    public function addCustomerToMoySklad($eventRoute, &$data) {
+        echo "Customer data:" . PHP_EOL;
+        $this->log()->write("MAKO!!");
+        var_dump($data);
+    }
+
     public function validate() {}
 
-    public function install() {}
+    public function install() {
+        $this->load->model("setting/event");
+        $this->model_setting_event->addEvent("omsi", "catalog/model/account/customer/addCustomer/after", "Extension/Module/Omsi/addCustomerToMoySklad");
+
+        // Create necessary tables
+    }
 
     public function uninstall() {
-
+        $this->load->model("setting/event");
+        $this->model_setting_event->deleteEventByCode("omsi");
     }
 }

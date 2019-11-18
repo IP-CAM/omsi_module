@@ -46,6 +46,10 @@ class SqlConstants {
          LEFT OUTER JOIN oc_ms_samopek_category sam_cat
          ON (cat.image = sam_cat.ms_group_uuid)";
 
+    const GET_CUSTOMER_ID_BY_EMAIL = "SELECT customer_id 
+         FROM oc_customer cust
+         WHERE email = ?";
+
     // INSERTs
     const INSERT_INTO_PRODUCT =
         "INSERT INTO oc_product
@@ -235,6 +239,12 @@ class SqlConstants {
              attribute_id = ?,
              language_id = 1,
              text = '?'";
+
+    const INSERT_INTO_MS_SAMOPEK_CUSTOMER =
+        "INSERT INTO oc_ms_samopek_customer 
+         SET customer_id = ?,
+             ms_customer_uuid = ?,
+             ms_version = ?";
 
     // UPDATEs
     const UPDATE_PRODUCT =
