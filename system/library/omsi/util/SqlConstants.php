@@ -14,31 +14,31 @@ class SqlConstants {
          FROM oc_category cat, oc_category_description descr
          WHERE cat.category_id = descr.category_id;";
 
-    const GET_PRODUCT_BY_MODEL = "SELECT * from oc_product where model = '?'";
+    const GET_PRODUCT_BY_MODEL = "SELECT * from oc_product where model = ?";
 
     const GET_ATTRIBUTE_GROUP_ID_BY_NAME = "SELECT attribute_group_id from oc_attribute_group_description where name like '%?%'";
 
-    const GET_ATTRIBUTE_ID_BY_UUID = "SELECT attribute_id from oc_ms_samopek_attributes where ms_attribute_uuid = '?'";
+    const GET_ATTRIBUTE_ID_BY_UUID = "SELECT attribute_id from oc_ms_samopek_attributes where ms_attribute_uuid = ?";
 
-    const GET_PRODUCT_ID_BY_UUID = "SELECT product_id from oc_ms_samopek_product where ms_uuid = '?'";
+    const GET_PRODUCT_ID_BY_UUID = "SELECT product_id from oc_ms_samopek_product where ms_uuid = ?";
 
-    const GET_OPTION_ID_BY_UUID = "SELECT option_id from oc_ms_samopek_option where ms_variant_uuid = '?'";
+    const GET_OPTION_ID_BY_UUID = "SELECT option_id from oc_ms_samopek_option where ms_variant_uuid = ?";
 
     const GET_PRODUCT_BY_PRODUCT_ID = "SELECT * from oc_product where product_id = ?";
 
     const GET_PRODUCT_PRICE_BY_PRODUCT_ID = "SELECT price from oc_product where product_id = ?";
 
-    const GET_OPTION_VALUE_ID_BY_NAME = "select option_value_id from oc_option_value_description where name = '?'";
+    const GET_OPTION_VALUE_ID_BY_NAME = "select option_value_id from oc_option_value_description where name = ?";
 
     const GET_PRODUCT_OPTION = "select product_option_id from oc_product_option where product_id = ? and option_id = ?";
 
-    const GET_SEO_URL_BY_QUERY = "SELECT * from oc_seo_url where query = '?'";
+    const GET_SEO_URL_BY_QUERY = "SELECT * from oc_seo_url where query = ?";
 
     const GET_VERSION_BY_PRODUCT_ID = "SELECT * from oc_ms_samopek_product where product_id = ?";
 
     const GET_PRODUCTS_VERSIONS = "SELECT ms_id, ms_version from oc_ms_samopek_product";
 
-    const GET_CATEGORY_ID_BY_UUID = "SELECT category_id from oc_ms_samopek_category where ms_group_uuid = '?'";
+    const GET_CATEGORY_ID_BY_UUID = "SELECT category_id from oc_ms_samopek_category where ms_group_uuid = ?";
 
     const GET_CATEGORY_ID_TO_PARENT_CATEGORY_ID =
         "SELECT cat.category_id, sam_cat.category_id as parent_category_id 
@@ -53,7 +53,7 @@ class SqlConstants {
     // INSERTs
     const INSERT_INTO_PRODUCT =
         "INSERT INTO oc_product
-         SET model = '?',
+         SET model = ?,
              sku = '',
              upc = '',
              ean = '',
@@ -62,7 +62,7 @@ class SqlConstants {
              mpn = '',
              location = '',
              quantity = ?,
-             image = '?',
+             image = ?,
              minimum = '0',
              subtract = '1',
              stock_status_id = '5',
@@ -80,17 +80,17 @@ class SqlConstants {
              status = '1',
              tax_class_id = '0',
              sort_order = '1',
-             date_added = '?',
+             date_added = ?,
              date_modified = NOW()";
 
     const INSERT_INTO_PRODUCT_DESCRIPTION =
         "INSERT INTO oc_product_description
          SET product_id = ?,
              language_id = 1,
-             name = '?',
-             description = '?',
+             name = ?,
+             description = ?,
              tag = '',
-             meta_title = '?',
+             meta_title = ?,
              meta_description = '',
              meta_keyword = ''";
 
@@ -98,7 +98,7 @@ class SqlConstants {
         "INSERT INTO oc_ms_samopek_product 
          SET product_id = ?,
              ms_id = ?,
-             ms_uuid = '?',
+             ms_uuid = ?,
              ms_version = ?";
 
     const INSERT_INTO_PRODUCT_TO_STORE =
@@ -113,7 +113,7 @@ class SqlConstants {
 
     const INSERT_INTO_CATEGORY =
         "INSERT INTO oc_category
-         SET image = '?',
+         SET image = ?,
              parent_id = 0,
              top = 0,
              `column` = 1,
@@ -126,9 +126,9 @@ class SqlConstants {
         "INSERT INTO oc_category_description
          SET category_id = ?,
              language_id = 1,
-             name = '?',
+             name = ?,
              description = '',
-             meta_title = '?',
+             meta_title = ?,
              meta_description = '',
              meta_keyword = ''";
 
@@ -146,15 +146,15 @@ class SqlConstants {
     const INSERT_INTO_MS_SAMOPEK_CATEGORY =
         "INSERT INTO oc_ms_samopek_category 
          SET category_id = ?,
-             ms_group_uuid = '?',
-             ms_version = '?'";
+             ms_group_uuid = ?,
+             ms_version = ?";
 
     const INSERT_INTO_SEO_URL =
         "INSERT INTO oc_seo_url 
          SET store_id = 0,
              language_id = 1,
-             query = '?',
-             keyword = '?'";
+             query = ?,
+             keyword = ?";
 
     const INSERT_INTO_OPTION =
         "INSERT INTO oc_option
@@ -165,7 +165,7 @@ class SqlConstants {
         "INSERT INTO oc_option_description
          SET option_id = ?,
              language_id = 1,
-             name = '?'";
+             name = ?";
 
     const INSERT_INTO_OPTION_VALUE =
         "INSERT INTO oc_option_value
@@ -178,12 +178,12 @@ class SqlConstants {
          SET option_value_id = ?,
              language_id = 1,
              option_id = ?,
-             name = '?'";
+             name = ?";
 
     const INSERT_INTO_MS_SAMOPEK_OPTION =
         "INSERT INTO oc_ms_samopek_option
          SET option_id = ?,
-             ms_variant_uuid = '?'";
+             ms_variant_uuid = ?";
 
     const INSERT_INTO_PRODUCT_OPTION =
         "INSERT INTO oc_product_option
@@ -215,7 +215,7 @@ class SqlConstants {
         "INSERT INTO oc_attribute_group_description
          SET attribute_group_id = ?, 
              language_id = 1,
-             name = '?'";
+             name = ?";
 
     const INSERT_INTO_ATTRIBUTE =
         "INSERT INTO oc_attribute
@@ -226,19 +226,19 @@ class SqlConstants {
         "INSERT INTO oc_attribute_description
          SET attribute_id = ?,
              language_id = 1,
-             name = '?'";
+             name = ?";
 
     const INSERT_INTO_MS_ATTRIBUTES =
         "INSERT INTO oc_ms_samopek_attributes
          SET attribute_id = ?,
-             ms_attribute_uuid = '?'";
+             ms_attribute_uuid = ?";
 
     const INSERT_INTO_PRODUCT_ATTRIBUTE =
         "INSERT INTO oc_product_attribute
          SET product_id = ?,
              attribute_id = ?,
              language_id = 1,
-             text = '?'";
+             text = ?";
 
     const INSERT_INTO_MS_SAMOPEK_CUSTOMER =
         "INSERT INTO oc_ms_samopek_customer 
@@ -250,7 +250,7 @@ class SqlConstants {
     const UPDATE_PRODUCT =
         "UPDATE oc_product
          SET price = ?,
-             image = '?',
+             image = ?,
              quantity = ? 
          WHERE product_id = ?";
 
@@ -261,8 +261,8 @@ class SqlConstants {
 
     const UPDATE_PRODUCT_DESCRIPTION =
         "UPDATE oc_product_description
-        SET name = '?',
-            description = '?'  
+        SET name = ?,
+            description = ?  
         WHERE product_id = ?";
 
     const UPDATE_MS_SAMOPEK_PRODUCT =
@@ -277,7 +277,7 @@ class SqlConstants {
 
     const UPDATE_ATTRIBUTE_DESCRIPTION =
         "UPDATE oc_attribute_description
-         SET name = '?' 
+         SET name = ? 
          WHERE language_id = 1
            AND attribute_id = ?";
 

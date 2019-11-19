@@ -25,7 +25,7 @@
     define("META_TYPE_VARIANT", "variant");
     define("VALUE", "value");
     define("PRODUCT_FOLDER", "productFolder");
-    define("VERSION", "version");
+    define("MS_VERSION", "version");
     define("NAME", "name");
     define("UPDATED", "updated");
     define("ATTRIBUTES", "attributes");

@@ -103,4 +103,16 @@ class Omsi {
         $productsService = new ProductsService($db);
         $productsService->deleteAllProducts();
     }
+
+    public function synchronizeCategories() {
+        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
+        $productsService = new ProductsService($db);
+        $productsService->syncCategories();
+    }
+
+    public function synchronizeProducts($count) {
+        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
+        $productsService = new ProductsService($db);
+        $productsService->syncProducts($count);
+    }
 }

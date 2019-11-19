@@ -18,7 +18,8 @@ class ParseUtils {
     }
 
     private static function getLastSegment($href) {
-        return end(explode("/", $href));
+        $res = explode("/", $href);
+        return end($res);
     }
 }
 ?>

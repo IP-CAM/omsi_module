@@ -11,7 +11,9 @@ class CategoriesDbHelper extends AbstractDbHelper {
     }
 
     public function insertCategory(Category $category) {
-        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_CATEGORY, $category->getParentId());
+        $data = array();
+        $data[] = $category->getParentId();
+        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_CATEGORY, $data);
         if ($result) {
             $resultId = parent::getLastInsertedId();
             echo "Successfully inserted category with id " . $resultId . "<br>";
@@ -20,30 +22,42 @@ class CategoriesDbHelper extends AbstractDbHelper {
     }
 
     public function insertCategoryDescription(Category $category) {
-        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_CATEGORY_DESCRIPTION, $category->getCategoryId(),
-            $category->getName(), $category->getName());
+        $data = array();
+        $data[] = $category->getCategoryId();
+        $data[] = $category->getName();
+        $data[] = $category->getName();
+        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_CATEGORY_DESCRIPTION, $data);
         if ($result) {
             echo "Successfully inserted category description <br>";
         }
     }
 
     public function insertCategoryIntoStore($category_id) {
-        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_CATEGORY_TO_STORE, $category_id);
+        $data = array();
+        $data[] = $category_id;
+        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_CATEGORY_TO_STORE, $data);
         if ($result) {
             echo "Successfully inserted category into store <br>";
         }
     }
 
     public function insertCategoryIntoTechnicalTable(Category $category) {
-        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_MS_SAMOPEK_CATEGORY, $category->getCategoryId(),
-            $category->getUuid(), $category->getVersion());
+        $data = array();
+        $data[] = $category->getCategoryId();
+        $data[] = $category->getUuid();
+        $data[] = $category->getVersion();
+        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_MS_SAMOPEK_CATEGORY, $data);
         if ($result) {
             echo "Successfully inserted category into oc_ms_samopek_category <br>";
         }
     }
 
     public function insertCategoryPath($categoryId, $pathId, $level) {
-        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_CATEGORY_PATH, $categoryId, $pathId, $level);
+        $data = array();
+        $data[] = $categoryId;
+        $data[] = $pathId;
+        $data[] = $level;
+        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_CATEGORY_PATH, $data);
         if ($result) {
             echo "Successfully inserted category path";
         }
@@ -62,8 +76,10 @@ class CategoriesDbHelper extends AbstractDbHelper {
         $result = $this->getDb()->query(SqlConstants::GET_CATEGORY_ID_TO_PARENT_CATEGORY_ID);
         foreach ($result->rows as $row) {
             if ($row['parent_category_id']) {
-                $this->getDb()->query(SqlConstants::UPDATE_CATEGORY_PARENT, $row['parent_category_id'],
-                    $row['category_id']);
+                $data = array();
+                $data[] = $row['parent_category_id'];
+                $data[] = $row['category_id'];
+                $this->getDb()->query(SqlConstants::UPDATE_CATEGORY_PARENT, $data);
             }
         }
     }
