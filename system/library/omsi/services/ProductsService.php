@@ -77,7 +77,7 @@ class ProductsService {
             }
             // $this->dbHelper->insertProductAttributes($product);
 
-            $this->dbHelper->closeTransaction();
+           // $this->dbHelper->closeTransaction();
         }
     }
 

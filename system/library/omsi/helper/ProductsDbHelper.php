@@ -12,9 +12,14 @@ class ProductsDbHelper extends AbstractDbHelper {
     }
 
     public function insertProduct(Product $product) {
-        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_PRODUCT, $product->getModel(),
-            $product->getQuantity() != null ? $product->getQuantity() : 0,
-            $product->getImage(), $product->getPrice(), $product->getWeight(), $product->getDateAdded());
+        $data = array();
+        $data[] = $product->getModel();
+        $data[] = $product->getQuantity() != null ? $product->getQuantity() : 0;
+        $data[] = $product->getImage();
+        $data[] = $product->getPrice();
+        $data[] = $product->getWeight();
+        $data[] = $product->getDateAdded();
+        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_PRODUCT, $data);
         if ($result) {
             $resultId = parent::getLastInsertedId();
             echo "Successfully inserted product with id " . $resultId . "<br>";
@@ -23,15 +28,21 @@ class ProductsDbHelper extends AbstractDbHelper {
     }
 
     public function insertProductDescription(Product $product) {
-        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_PRODUCT_DESCRIPTION, $product->getProductId(),
-            $product->getName(), $product->getDescription(), $product->getMetaTitle());
+        $data = array();
+        $data[] = $product->getProductId();
+        $data[] = $product->getName();
+        $data[] = $product->getDescription();
+        $data[] = $product->getMetaTitle();
+        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_PRODUCT_DESCRIPTION, $data);
         if ($result) {
             echo "Successfully inserted product description <br>";
         }
     }
 
     public function insertProductIntoStore($product_id) {
-        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_PRODUCT_TO_STORE, $product_id);
+        $data = array();
+        $data[] = $product_id;
+        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_PRODUCT_TO_STORE, $data);
         if ($result) {
             echo "Successfully inserted product into store <br>";
         }
@@ -45,23 +56,32 @@ class ProductsDbHelper extends AbstractDbHelper {
         if (!$productCategory) {
             return;
         }
-        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_PRODUCT_TO_CATEGORY, $product->getProductId(),
-            $productCategory);
+
+        $data = array();
+        $data[] = $product->getProductId();
+        $data[] = $productCategory;
+        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_PRODUCT_TO_CATEGORY, $data);
         if ($result) {
             echo "Successfully inserted product into category <br>";
         }
     }
 
     public function getCategoryIdByUuid($uuid) {
-        $result = $this->getDb()->query(SqlConstants::GET_CATEGORY_ID_BY_UUID, $uuid);
+        $data = array();
+        $data[] = $uuid;
+        $result = $this->getDb()->query(SqlConstants::GET_CATEGORY_ID_BY_UUID, $data);
         if ($result) {
             return $result->row['category_id'];
         }
     }
 
     public function insertProductIntoTechnicalTable(Product $product) {
-        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_MS_SAMOPEK_PRODUCT, $product->getProductId(),
-                        $product->getModel(), $product->getUuid(), $product->getVersion());
+        $data = array();
+        $data[] = $product->getProductId();
+        $data[] = $product->getModel();
+        $data[] = $product->getUuid();
+        $data[] = $product->getVersion();
+        $result = $this->getDb()->query(SqlConstants::INSERT_INTO_MS_SAMOPEK_PRODUCT, $data);
         if ($result) {
             echo "Successfully inserted product into oc_ms_samopek_products <br>";
         }
@@ -69,19 +89,24 @@ class ProductsDbHelper extends AbstractDbHelper {
 
     public function insertAttributeGroup()
     {
-        $result = $this->getDb()->query(SqlConstants::GET_ATTRIBUTE_GROUP_ID_BY_NAME, "Характеристики");
+        $data = array();
+        $data[] = "Характеристики";
+        $result = $this->getDb()->query(SqlConstants::GET_ATTRIBUTE_GROUP_ID_BY_NAME, $data);
         if ($result->num_rows === 0) {
             $result = $this->getDb()->query(SqlConstants::INSERT_INTO_ATTRIBUTE_GROUP);
             if ($result) {
                 $groupId = parent::getLastInsertedId();
-                $result = $this->getDb()->query(SqlConstants::INSERT_INTO_ATTRIBUTE_GROUP_DESCRIPTION, $groupId, "Характеристики");
+                $data = array();
+                $data[] = $groupId;
+                $data[] = "Характеристики";
+                $result = $this->getDb()->query(SqlConstants::INSERT_INTO_ATTRIBUTE_GROUP_DESCRIPTION, $data);
                 if ($result) {
-                    $this->logger->debug("Inserted Attribute group id = " . $groupId . " name = Характеристики");
+               //     $this->logger->debug("Inserted Attribute group id = " . $groupId . " name = Характеристики");
                     return $groupId;
                 }
             }
         } else {
-            $this->logger->debug("Attribute group Haracteristiki exists.");
+      //      $this->logger->debug("Attribute group Haracteristiki exists.");
         }
         return null;
     }
@@ -90,16 +115,27 @@ class ProductsDbHelper extends AbstractDbHelper {
     {
         $id = $this->getAttributeIdByUuid($uuid);
         if ($id != 0) {
-            $result = $this->getDb()->query(SqlConstants::UPDATE_ATTRIBUTE_DESCRIPTION, $name, $id);
+            $data = array();
+            $data[] = $name;
+            $data[] = $id;
+            $result = $this->getDb()->query(SqlConstants::UPDATE_ATTRIBUTE_DESCRIPTION, $data);
         } else {
-            $result = $this->getDb()->query(SqlConstants::INSERT_INTO_ATTRIBUTE, $groupId);
+            $data = array();
+            $data[] = $groupId;
+            $result = $this->getDb()->query(SqlConstants::INSERT_INTO_ATTRIBUTE, $data);
             if ($result) {
                 $attributeId = parent::getLastInsertedId();
-                $result = $this->getDb()->query(SqlConstants::INSERT_INTO_ATTRIBUTE_DESCRIPTION, $attributeId, $name);
+                $data = array();
+                $data[] = $attributeId;
+                $data[] = $name;
+                $result = $this->getDb()->query(SqlConstants::INSERT_INTO_ATTRIBUTE_DESCRIPTION, $data);
                 if ($result) {
-                    $result = $this->getDb()->query(SqlConstants::INSERT_INTO_MS_ATTRIBUTES, $attributeId, $uuid);
+                    $data = array();
+                    $data[] = $attributeId;
+                    $data[] = $uuid;
+                    $result = $this->getDb()->query(SqlConstants::INSERT_INTO_MS_ATTRIBUTES, $data);
                     if ($result) {
-                        $this->logger->debug("Inserted attribute with id = " . $attributeId . " UUID = " . $uuid);
+                    //    $this->logger->debug("Inserted attribute with id = " . $attributeId . " UUID = " . $uuid);
                     }
                 }
             }
@@ -120,13 +156,15 @@ class ProductsDbHelper extends AbstractDbHelper {
     }
 
     public function getAttributeIdByUuid ($uuid) {
-        $result = $this->getDb()->query(SqlConstants::GET_ATTRIBUTE_ID_BY_UUID, $uuid);
+        $data = array();
+        $data[] = $uuid;
+        $result = $this->getDb()->query(SqlConstants::GET_ATTRIBUTE_ID_BY_UUID, $data);
         if ($result->num_rows === 0) {
-            $this->logger->debug("Attribute with UUID = " . $uuid . " NOT exists!");
+     //       $this->logger->debug("Attribute with UUID = " . $uuid . " NOT exists!");
             return 0;
         } else {
             $id = $result->row['attribute_id'];
-            $this->logger->debug("Attribute with UUID = " . $uuid . " exists! Samopek ID = " . $id);
+    //        $this->logger->debug("Attribute with UUID = " . $uuid . " exists! Samopek ID = " . $id);
             return $id;
         }
     }
@@ -172,7 +210,9 @@ class ProductsDbHelper extends AbstractDbHelper {
     }
 
     public function getProductIdIfExists($model) {
-        $result = $this->getDb()->query(SqlConstants::GET_PRODUCT_BY_MODEL, $model);
+        $data = array();
+        $data[] = $model;
+        $result = $this->getDb()->query(SqlConstants::GET_PRODUCT_BY_MODEL, $data);
         if ($result->num_rows === 0) {
             return false;
         } else {
@@ -206,7 +246,9 @@ class ProductsDbHelper extends AbstractDbHelper {
      * @return bool
      */
     public function updateProduct(Product $product) {
-        $result = $this->getDb()->query(SqlConstants::GET_VERSION_BY_PRODUCT_ID, $product->getProductId());
+        $data = array();
+        $data[] = $product->getProductId();
+        $result = $this->getDb()->query(SqlConstants::GET_VERSION_BY_PRODUCT_ID, $data);
 
         if ($result->num_rows === 0) {
             echo "Product with ID = " . $product->getProductId() . " NOT exists!";
@@ -214,11 +256,21 @@ class ProductsDbHelper extends AbstractDbHelper {
         } else {
             if ($product->getVersion() > $result->row['ms_version']) {
                 echo "Product with ID = " . $product->getProductId() . " was updated in MySklad, updating in Opencart";
-                $this->getDb()->query(SqlConstants::UPDATE_PRODUCT, $product->getPrice(), $product->getImage(),
-                    $product->getQuantity(), $product->getProductId());
-                $this->getDb()->query(SqlConstants::UPDATE_PRODUCT_DESCRIPTION, $product->getName(),
-                    $product->getDescription(), $product->getProductId());
-                $this->getDb()->query(SqlConstants::UPDATE_MS_SAMOPEK_PRODUCT, $product->getVersion(), $product->getProductId());
+                $data = array();
+                $data[] = $product->getPrice();
+                $data[] = $product->getImage();
+                $data[] = $product->getQuantity();
+                $data[] = $product->getProductId();
+                $this->getDb()->query(SqlConstants::UPDATE_PRODUCT, $data);
+                $data = array();
+                $data[] = $product->getName();
+                $data[] = $product->getDescription();
+                $data[] = $product->getProductId();
+                $this->getDb()->query(SqlConstants::UPDATE_PRODUCT_DESCRIPTION, $data);
+                $data = array();
+                $data[] = $product->getVersion();
+                $data[] = $product->getProductId();
+                $this->getDb()->query(SqlConstants::UPDATE_MS_SAMOPEK_PRODUCT, $data);
                 return true;
             } else {
                 echo "Product with ID = " . $product->getProductId() . " was NOT updated in MySklad, skipping update";
