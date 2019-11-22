@@ -39,8 +39,9 @@
     define("URL_GET_GROUP", "/entity/productfolder");
     define("URL_GET_VARIANTS", "/entity/variant");
     define("URL_GET_ALL_VARIANTS_TYPES", "/entity/variant/metadata");
-    define("URL_GET_ALL_CUSTOMERS", "/entity/counterparty");
-
+    define("URL_GET_CUSTOMER", "/entity/counterparty");
+    define("URL_GET_ORGANIZATION", "/entity/organization");
+    define("URL_GET_CUSTOMER_ORDER", "/entity/customerorder");
 
     // URL params
     define("URL_PARAM_LIMIT", "limit=100");

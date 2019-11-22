@@ -50,6 +50,12 @@ class SqlConstants {
          FROM oc_customer cust
          WHERE email = ?";
 
+    const GET_CUSTOMER_UUID_BY_ORDER_ID =
+        "SELECT cust.ms_customer_uuid 
+         FROM oc_ms_samopek_customer cust, oc_order ord
+         WHERE ord.customer_id = cust.customer_id
+           AND ord.order_id = ?";
+
     // INSERTs
     const INSERT_INTO_PRODUCT =
         "INSERT INTO oc_product

@@ -1,5 +1,5 @@
 <?php
-include_once dirname(__FILE__) . '/AbstractDbHelper.php';
+require_once dirname(__FILE__) . '/AbstractDbHelper.php';
 
 class CustomersDbHelper extends AbstractDbHelper {
 
@@ -26,6 +26,18 @@ class CustomersDbHelper extends AbstractDbHelper {
             return $result->row['customer_id'];
         } else {
             echo "Two customers with the same EMAIL. Dying..";
+            die;
+        }
+    }
+
+    public function getCustomerUuidByOrderId($orderId) {
+        $params = array();
+        $params[] = $orderId;
+        $result = $this->getDb()->query(SqlConstants::GET_CUSTOMER_UUID_BY_ORDER_ID, $params);
+        if ($result->num_rows == 1) {
+            return $result->row['ms_customer_uuid'];
+        } else {
+            echo "Two customers for the same ORDER. Dying..";
             die;
         }
     }

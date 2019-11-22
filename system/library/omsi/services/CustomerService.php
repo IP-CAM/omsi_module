@@ -3,7 +3,7 @@ require_once dirname(__FILE__) . '/../util/MsConstants.php';
 require_once dirname(__FILE__) . '/../loader/BaseLoader.php';
 require_once dirname(__FILE__) . '/../helper/CustomersDbHelper.php';
 
-class customerService extends BaseLoader {
+class CustomerService extends BaseLoader {
 
     private $customerHelper;
 
@@ -12,7 +12,7 @@ class customerService extends BaseLoader {
     }
 
     public function getCustomersByName($name) {
-        $url = URL_BASE . URL_GET_ALL_CUSTOMERS . "?" . URL_PARAM_SEARCH . urlencode($name);
+        $url = URL_BASE . URL_GET_CUSTOMER . "?" . URL_PARAM_SEARCH . urlencode($name);
         echo $url;
 
         $resultArray = parent::load($url);
@@ -21,7 +21,7 @@ class customerService extends BaseLoader {
 
     public function createCustomer($name, $surname, $email, $phoneNumber) {
         $data = array("name" => $name . " " . $surname, "description" => "Синхронизирован автоматически. Создан на сайте.", "email" => $email, "phone" => $phoneNumber);
-        $url = URL_BASE . URL_GET_ALL_CUSTOMERS;
+        $url = URL_BASE . URL_GET_CUSTOMER;
         $resultArray = parent::post($url, $data);
         if ($resultArray != false) {
             $this->customerHelper->createCustomerAssociation($this->customerHelper->getCustomerIdByEmail($email), $resultArray['id'], $resultArray['version']);

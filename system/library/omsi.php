@@ -3,6 +3,7 @@ require_once dirname(__FILE__) . '/omsi/util/globalConstants.php';
 require_once dirname(__FILE__) . '/omsi/helper/ProductsDbHelper.php';
 require_once dirname(__FILE__) . '/omsi/loader/ProductsLoader.php';
 require_once dirname(__FILE__) . '/omsi/services/CustomerService.php';
+require_once dirname(__FILE__) . '/omsi/services/OrderService.php';
 require_once dirname(__FILE__) . '/omsi/services/ProductsService.php';
 
 class Omsi {
@@ -24,16 +25,12 @@ class Omsi {
 
     public function __construct($registry) {
         $this->registry = $registry;
-       // $this->log = $registry->get('log');
+        $this->log = $registry->get('log');
     }
 
     public function updateProduct($model) {
         $productsLoader = new ProductsLoader();
         $productsLoader->loadProduct('002223');
-    }
-
-    public function createCustomerOrder() {
-
     }
 
     public function ifCustomerExists($name, $surname) {
@@ -59,7 +56,7 @@ class Omsi {
 
     public function testGetCustomerByName($name) {
 
-            $service = new customerService();
+            $service = new CustomerService();
             $resultArray = $service->getCustomersByName($name);
             if (count($resultArray)) {
                 echo "Great. Here is result";
@@ -71,7 +68,7 @@ class Omsi {
 
     public function сreateCustomer($сustomerData) {
         $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
-        $service = new customerService($db);
+        $service = new CustomerService($db);
 
         $lastName = $сustomerData['lastname'];
 
@@ -95,7 +92,7 @@ class Omsi {
            // $this->log->write("Customer with lastname " . $lastName . " was found in MoySklad. Linking...");
         }
 
-        $this->log->write(var_export($foundCustomers));
+      //  $this->log->write(var_export($foundCustomers));
     }
 
     public function deleteAllProducts() {
@@ -114,5 +111,16 @@ class Omsi {
         $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
         $productsService = new ProductsService($db);
         $productsService->syncProducts($count);
+    }
+
+    public function createCustomerOrder($orderData) {
+        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
+        $service = new OrderService($db);
+        $result = $service->createOrder($orderData[0], $orderData[1]);
+        echo "Order data:" . PHP_EOL;
+        echo $result;
+        //$this->log->write(var_export($orderData));
+
+        return $orderData;
     }
 }

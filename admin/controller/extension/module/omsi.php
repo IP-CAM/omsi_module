@@ -79,25 +79,18 @@ class ControllerExtensionModuleOmsi extends Controller {
         $this->response->setOutput(json_encode($json));
     }
 
-    public function addCustomerToMoySklad($eventRoute, &$data) {
-        echo "Customer data:" . PHP_EOL;
-        $this->log()->write("MAKO!!");
-        var_dump($data);
-    }
-
     public function validate() {}
 
     public function install() {
         $this->load->model("setting/event");
-        $this->model_setting_event->addEvent("omsiAddCustomer", "catalog/model/account/customer/addCustomer/after", "Extension/Module/Omsi/addCustomerToMoySklad");
-        $this->model_setting_event->addEvent("omsiAddOrder", "catalog/model/checkout/order/addOrderHistory/before", "Extension/Module/Omsi/addOrderToMoySklad");
+        $this->model_setting_event->addEvent("omsi", "catalog/model/account/customer/addCustomer/after", "extension/module/omsi/addCustomerToMoySklad");
+        $this->model_setting_event->addEvent("omsi", "catalog/model/checkout/order/addOrderHistory/before", "extension/module/omsi/addOrderToMoySklad");
 
         // Create necessary tables
     }
 
     public function uninstall() {
         $this->load->model("setting/event");
-        $this->model_setting_event->deleteEventByCode("omsiAddCustomer");
-        $this->model_setting_event->deleteEventByCode("omsiAddOrder");
+        $this->model_setting_event->deleteEventByCode("omsi");
     }
 }
