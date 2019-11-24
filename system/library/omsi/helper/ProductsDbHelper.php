@@ -220,9 +220,29 @@ class ProductsDbHelper extends AbstractDbHelper {
         }
     }
 
+    public function getProductsByOrderId($orderId) {
+        $data = array();
+        $data[] = $orderId;
+        $result = $this->getDb()->query(SqlConstants::GET_PRODUCTS_BY_ORDER_ID, $data);
+
+        if ($result->num_rows > 0) {
+            //echo "RES " . var_export($result);
+            return $result->rows;
+        }
+    }
+
     public function getProductIdByUuid($productUuid) {
         $result = $this->getDb()->query(SqlConstants::GET_PRODUCT_ID_BY_UUID, $productUuid);
         return $result->row["product_id"];
+    }
+
+    public function getProductUuidByProductId($productId) {
+        $data = array();
+        $data[] = $productId;
+        //echo "PRODUCT " . $productId;
+        $result = $this->getDb()->query(SqlConstants::GET_PRODUCT_UUID_BY_PRODUCT_ID, $data);
+       // echo "RESULT " . $result;
+        return $result->row["ms_uuid"];
     }
 
     public function getPriceByProductId($productId) {

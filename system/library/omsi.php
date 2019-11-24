@@ -117,8 +117,8 @@ class Omsi {
         $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
         $service = new OrderService($db);
         $result = $service->createOrder($orderData[0], $orderData[1]);
-        echo "Order data:" . PHP_EOL;
-        echo $result;
+        //echo "Order data:" . PHP_EOL;
+       // echo $result;
         //$this->log->write(var_export($orderData));
 
         return $orderData;

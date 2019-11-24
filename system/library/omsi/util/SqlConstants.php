@@ -16,11 +16,15 @@ class SqlConstants {
 
     const GET_PRODUCT_BY_MODEL = "SELECT * from oc_product where model = ?";
 
+    const GET_PRODUCTS_BY_ORDER_ID = "SELECT product_id, quantity, price from oc_order_product where order_id = ?";
+
     const GET_ATTRIBUTE_GROUP_ID_BY_NAME = "SELECT attribute_group_id from oc_attribute_group_description where name like '%?%'";
 
     const GET_ATTRIBUTE_ID_BY_UUID = "SELECT attribute_id from oc_ms_samopek_attributes where ms_attribute_uuid = ?";
 
     const GET_PRODUCT_ID_BY_UUID = "SELECT product_id from oc_ms_samopek_product where ms_uuid = ?";
+
+    const GET_PRODUCT_UUID_BY_PRODUCT_ID = "SELECT ms_uuid from oc_ms_samopek_product where product_id = ?";
 
     const GET_OPTION_ID_BY_UUID = "SELECT option_id from oc_ms_samopek_option where ms_variant_uuid = ?";
 
