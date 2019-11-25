@@ -50,9 +50,15 @@ class SqlConstants {
          LEFT OUTER JOIN oc_ms_samopek_category sam_cat
          ON (cat.image = sam_cat.ms_group_uuid)";
 
-    const GET_CUSTOMER_ID_BY_EMAIL = "SELECT customer_id 
-         FROM oc_customer cust
-         WHERE email = ?";
+    const GET_ALL_NOT_SYNCED_CUSTOMERS =
+        "SELECT cust.customer_id, cust.firstname, cust.lastname, cust.email, cust.telephone
+           FROM oc_customer cust
+            WHERE (SELECT count(*) FROM oc_ms_samopek_customer WHERE customer_id = cust.customer_id) = 0";
+
+    const GET_CUSTOMER_ID_BY_EMAIL =
+        "SELECT customer_id 
+           FROM oc_customer cust
+           WHERE email = ?";
 
     const GET_CUSTOMER_UUID_BY_ORDER_ID =
         "SELECT cust.ms_customer_uuid 

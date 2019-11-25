@@ -19,13 +19,34 @@ class CustomerService extends BaseLoader {
         return $resultArray['rows'];
     }
 
-    public function createCustomer($name, $surname, $email, $phoneNumber) {
-        $data = array("name" => $name . " " . $surname, "description" => "Синхронизирован автоматически. Создан на сайте.", "email" => $email, "phone" => $phoneNumber);
-        $url = URL_BASE . URL_GET_CUSTOMER;
-        $resultArray = parent::post($url, $data);
-        if ($resultArray != false) {
-            $this->customerHelper->createCustomerAssociation($this->customerHelper->getCustomerIdByEmail($email), $resultArray['id'], $resultArray['version']);
+    public function synchronizeCustomers() {
+        $customers = $this->customerHelper->getAllCustomers();
+        if($customers->num_rows > 0) {
+            foreach ($customers->rows as $customer) {
+                $foundCustomers = $this->getCustomersByName($customer['lastname']);
+                if (count($foundCustomers) === 0) {
+                    $this->createCustomer($customer['firstname'], $customer['lastname'], $customer['email'], $customer['telephone']);
+                } else {
+                    echo "Customer " . $customer['name'] . " already exists in MoySklad. Just linking..." . PHP_EOL;
+                    $this->linkCustomer($foundCustomers[0], $customer['customer_id']);
+                }
+            }
+        } else {
+            echo "Nothing to sync. All customers synced" . PHP_EOL;
         }
-        return $resultArray;
+    }
+
+    public function createCustomer($name, $lastname, $email, $phoneNumber) {
+        $data = array("name" => $name . " " . $lastname, "description" => "Синхронизирован автоматически. Создан на сайте.", "email" => $email, "phone" => $phoneNumber);
+        $url = URL_BASE . URL_GET_CUSTOMER;
+        $customer = parent::post($url, $data);
+        if ($customer != false) {
+            $this->linkCustomer($customer, $this->customerHelper->getCustomerIdByEmail($email));
+        }
+        return $customer;
+    }
+
+    public function linkCustomer($customer, $customerId) {
+        $this->customerHelper->createCustomerAssociation($customerId, $customer['id'], $customer['version']);
     }
 }

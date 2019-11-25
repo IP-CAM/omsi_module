@@ -25,6 +25,8 @@ class ControllerExtensionModuleOmsi extends Controller {
             $obj_omsi->synchronizeCategories();
         } else if (isset($this->request->get['sync_n_products'])) {
             $obj_omsi->synchronizeProducts($this->request->get['sync_n_products']);
+        } else if (isset($this->request->get['sync_customers'])) {
+            $obj_omsi->synchronizeCustomers();
         } else {
             echo "Achtung" .PHP_EOL;
             $this->log->write("Achtung");

@@ -113,6 +113,12 @@ class Omsi {
         $productsService->syncProducts($count);
     }
 
+    public function synchronizeCustomers() {
+        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
+        $customerService = new CustomerService($db);
+        $customerService->synchronizeCustomers();
+    }
+
     public function createCustomerOrder($orderData) {
         $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
         $service = new OrderService($db);

@@ -41,5 +41,10 @@ class CustomersDbHelper extends AbstractDbHelper {
             die;
         }
     }
+
+    public function getAllCustomers() {
+        $result = $this->getDb()->query(SqlConstants::GET_ALL_NOT_SYNCED_CUSTOMERS);
+        return $result;
+    }
 }
 ?>

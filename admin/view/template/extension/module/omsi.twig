@@ -85,8 +85,9 @@
         <button id="loadAssortment"> Load Assortment </button>
         <input name="productModel"><br>
         <button id="deleteAllProducts"> Delete All Products </button><br>
-        <button id="synchronizeCategories"> Synchronize categories</button><br>
-        <button id="syncronizeNProducts"> Synchronize N products</button><input name="productsCount"><br>
+        <button id="synchronizeCategories"> Synchronize categories </button><br>
+        <button id="syncronizeNProducts"> Synchronize N products </button><input name="productsCount"><br>
+        <button id="syncronizeCustomers"> Synchronize customers </button><br>
       </div>
     </div>
   </div>
@@ -141,6 +142,21 @@
         var productsCount = $('input[name=\'productsCount\']').val();
         $.ajax({
             url: 'index.php?route=extension/module/omsi&sync_n_products=' + encodeURIComponent(productsCount) + '&user_token={{ user_token }}',
+            type: 'get',
+            dataType: 'json',
+            /*data: $("#form-review").serialize(),*/
+            success: function(json) {
+
+                if (json['error']) {
+
+                }
+            }
+        });
+    });
+    $('#syncronizeCustomers').on('click', function() {
+
+        $.ajax({
+            url: 'index.php?route=extension/module/omsi&sync_customers=1&user_token={{ user_token }}',
             type: 'get',
             dataType: 'json',
             /*data: $("#form-review").serialize(),*/
