@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__FILE__) . '/../helper/ProductsDbHelper.php';
 require_once dirname(__FILE__) . '/../helper/CategoriesDbHelper.php';
+require_once dirname(__FILE__) . '/../helper/SeoUrlsDbHelper.php';
 require_once dirname(__FILE__) . '/../loader/ProductsLoader.php';
 require_once dirname(__FILE__) . '/../loader/CategoriesLoader.php';
 
@@ -8,6 +9,7 @@ class ProductsService {
 
     private $productsDbHelper;
     private $categoriesDbHelper;
+    private $seoUrlsDbHelper;
 
     private $productsLoader;
     private $categoriesLoader;
@@ -15,6 +17,7 @@ class ProductsService {
     public function __construct($db) {
         $this->productsDbHelper = new ProductsDbHelper($db);
         $this->categoriesDbHelper = new CategoriesDbHelper($db);
+        $this->seoUrlsDbHelper = new SeoUrlsDbHelper($db);
 
         $this->productsLoader = new ProductsLoader($db);
         $this->categoriesLoader = new CategoriesLoader($db);
@@ -79,6 +82,22 @@ class ProductsService {
 
            // $this->dbHelper->closeTransaction();
         }
+
+        $this->rebuildSeoUrls();
+    }
+
+    private function rebuildSeoUrls() {
+        echo "Start SEO URLs sync." . PHP_EOL;
+        $this->seoUrlsDbHelper->cleanSeoUrls();
+        $products = $this->productsDbHelper->getAllProductsWithNames();
+        foreach ($products as $product) {
+            $this->seoUrlsDbHelper->insertSeoUrl($product['product_id'], CommonUtils::getSeoUrl($product['name']), false);
+        }
+        $categories = $this->categoriesDbHelper->getAllCategoriesWithNames();
+        foreach ($categories as $category) {
+            $this->seoUrlsDbHelper->insertSeoUrl($category['category_id'], CommonUtils::getSeoUrl($category['name']), true);
+        }
+        echo "End SEO URLs sync." . PHP_EOL;
     }
 
     private function fillCategories($mapCategoriesParents) {

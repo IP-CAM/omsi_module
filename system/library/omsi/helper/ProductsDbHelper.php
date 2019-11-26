@@ -1,6 +1,6 @@
 <?php
-include_once dirname(__FILE__) . '/../model/Attribute.php';
-include_once dirname(__FILE__) . '/AbstractDbHelper.php';
+require_once dirname(__FILE__) . '/../model/Attribute.php';
+require_once dirname(__FILE__) . '/AbstractDbHelper.php';
 
 class ProductsDbHelper extends AbstractDbHelper {
 
