@@ -4,6 +4,7 @@ require_once dirname(__FILE__) . '/../helper/CategoriesDbHelper.php';
 require_once dirname(__FILE__) . '/../helper/SeoUrlsDbHelper.php';
 require_once dirname(__FILE__) . '/../loader/ProductsLoader.php';
 require_once dirname(__FILE__) . '/../loader/CategoriesLoader.php';
+require_once dirname(__FILE__) . '/../util/CommonUtils.php';
 
 class ProductsService {
 
