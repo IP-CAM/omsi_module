@@ -129,4 +129,8 @@ class Omsi {
 
         return $orderData;
     }
+
+    public function updateProducts($model) {
+        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
+    }
 }

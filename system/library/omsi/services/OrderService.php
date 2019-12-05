@@ -26,20 +26,26 @@ class OrderService extends BaseLoader {
     public function createOrder($orderId, $orderStatus) {
         $organizationMetadata = array("meta" => $this->organizationLoader->getOrganizationMetadata());
         $customerUuid = $this->customerHelper->getCustomerUuidByOrderId($orderId);
-        $customerMetadata = array("meta" => $this->customerLoader->getCustomerMetadata($customerUuid));
-        $positions = $this->getPositionsByOrderId($orderId);
-        $data = array(
-            "organization" => $organizationMetadata,
-            "agent" => $customerMetadata,
-            "positions" => $positions
-        );
-        echo "RES " . var_export($positions);
-        $url = URL_BASE . URL_GET_CUSTOMER_ORDER;
-        $resultArray = parent::post($url, $data);
-        if ($resultArray != false) {
-            echo "RESULT " . var_export($resultArray);
+        if ($customerUuid == null) {
+            return null;
         }
-        return $resultArray;
+        $customerMetadata = array("meta" => $this->customerLoader->getCustomerMetadata($customerUuid));
+        if ($customerMetadata['meta'] != null) {
+            $positions = $this->getPositionsByOrderId($orderId);
+            $data = array(
+                "organization" => $organizationMetadata,
+                "agent" => $customerMetadata,
+                "positions" => $positions
+            );
+            echo "RES " . var_export($positions);
+            $url = URL_BASE . URL_GET_CUSTOMER_ORDER;
+            $resultArray = parent::post($url, $data);
+            if ($resultArray != false) {
+                echo "RESULT " . var_export($resultArray);
+            }
+            return $resultArray;
+        }
+        return null;
     }
 
     private function getPositionsByOrderId($orderId) {

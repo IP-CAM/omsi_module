@@ -37,8 +37,8 @@ class CustomersDbHelper extends AbstractDbHelper {
         if ($result->num_rows == 1) {
             return $result->row['ms_customer_uuid'];
         } else {
-            echo "Two customers for the same ORDER. Dying..";
-            die;
+            //echo "Two customers for the same ORDER. Dying..";
+            return null;
         }
     }
 
