@@ -5,7 +5,8 @@ class ControllerExtensionModuleOmsi extends Controller {
     const DEFAULT_MODULE_SETTINGS = [
         'name' => 'OMSI',
         'model' => '',
-        'status' => 1 /* Enabled by default*/
+        'status' => 1 /* Enabled by default*/,
+        'version' => 0.02
     ];
 
     public function index() {
@@ -57,6 +58,7 @@ class ControllerExtensionModuleOmsi extends Controller {
         $module_setting = $this->model_setting_module->getModule($module_id);
         $data['name'] = $module_setting['name'];
         $data['status'] = $module_setting['status'];
+        $data['version_value'] = $module_setting['version'];
 
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
