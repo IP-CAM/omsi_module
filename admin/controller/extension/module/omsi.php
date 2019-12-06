@@ -64,7 +64,10 @@ class ControllerExtensionModuleOmsi extends Controller {
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
 
+        $data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true);
+
         $htmlOutput = $this->load->view('extension/module/omsi', $data);
+
         $this->response->setOutput($htmlOutput);
     }
 
