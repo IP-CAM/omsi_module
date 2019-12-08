@@ -10,6 +10,15 @@ class CategoriesDbHelper extends AbstractDbHelper {
         }
     }
 
+    public function getAllCategoriesExcludingCurrent($categoryId) {
+        $data = array();
+        $data[] = $categoryId;
+        $result = $this->getDb()->query(SqlConstants::GET_CATEGORIES_FROM_PATH_EXCLUDING_CURRENT, $data);
+        if ($result) {
+            return $result->rows;
+        }
+    }
+
     public function insertCategory(Category $category) {
         $data = array();
         $data[] = $category->getParentId();
@@ -86,6 +95,12 @@ class CategoriesDbHelper extends AbstractDbHelper {
 
     public function getCategoryIdByUuid($uuid) {
         return $this->getDb()->query(SqlConstants::GET_CATEGORY_ID_BY_UUID, $uuid);
+    }
+
+    public function getCategoryIdByProductId($productId) {
+        $data = array();
+        $data[] = $productId;
+        return $this->getDb()->query(SqlConstants::GET_CATEGORY_ID_BY_PRODUCT_ID, $data);
     }
 
     public function deleteAllCategories() {

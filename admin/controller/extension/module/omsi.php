@@ -10,15 +10,13 @@ class ControllerExtensionModuleOmsi extends Controller {
     ];
 
     public function index() {
-        echo "index start" .PHP_EOL;
-        echo getcwd() . "\n";
 
         $this->load->library('omsi');
         $obj_omsi = Omsi::get_instance($this->registry);
 
         if (isset($this->request->get['product_model'])) {
             echo "OK" .PHP_EOL;
-            $this->log->write("OK");
+            $this->log->write("MAKO TEST auhhhh");
             $this->testOmsi($this->request->get['product_model']);
         } else if (isset($this->request->get['deleteAllProducts'])) {
             $obj_omsi->deleteAllProducts();
@@ -28,6 +26,8 @@ class ControllerExtensionModuleOmsi extends Controller {
             $obj_omsi->synchronizeProducts($this->request->get['sync_n_products']);
         } else if (isset($this->request->get['sync_customers'])) {
             $obj_omsi->synchronizeCustomers();
+        } else if (isset($this->request->get['update_products_categories'])) {
+            $obj_omsi->updateProductsCategories();
         } else {
             echo "Achtung" .PHP_EOL;
             $this->log->write("Achtung");
@@ -75,8 +75,8 @@ class ControllerExtensionModuleOmsi extends Controller {
         $this->load->library('omsi');
         $obj_omsi = Omsi::get_instance($this->registry);
         $obj_omsi->testReadProductName($model);
-        $obj_omsi->testGetCustomerByName('Татьяна');
-        $obj_omsi->сreateCustomer('Татьяна', 'Ааап', 'test@test.ru');
+        //$obj_omsi->testGetCustomerByName('Татьяна');
+        //$obj_omsi->сreateCustomer('Татьяна', 'Ааап', 'test@test.ru');
         echo "updateProduct" .PHP_EOL;
         $json = array();
 

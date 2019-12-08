@@ -14,6 +14,12 @@ class SqlConstants {
          FROM oc_category cat, oc_category_description descr
          WHERE cat.category_id = descr.category_id;";
 
+    const GET_CATEGORIES_FROM_PATH_EXCLUDING_CURRENT =
+        "SELECT path_id FROM oc_category_path
+         WHERE category_id = ? and category_id != path_id";
+
+    const GET_ALL_PRODUCTS_IDS = "SELECT product_id from oc_product";
+
     const GET_PRODUCT_BY_MODEL = "SELECT * from oc_product where model = ?";
 
     const GET_PRODUCTS_BY_ORDER_ID = "SELECT product_id, quantity, price from oc_order_product where order_id = ?";
@@ -43,6 +49,8 @@ class SqlConstants {
     const GET_PRODUCTS_VERSIONS = "SELECT ms_id, ms_version from oc_ms_samopek_product";
 
     const GET_CATEGORY_ID_BY_UUID = "SELECT category_id from oc_ms_samopek_category where ms_group_uuid = ?";
+
+    const GET_CATEGORY_ID_BY_PRODUCT_ID = "SELECT category_id from oc_product_to_category where product_id = ?";
 
     const GET_CATEGORY_ID_TO_PARENT_CATEGORY_ID =
         "SELECT cat.category_id, sam_cat.category_id as parent_category_id 

@@ -40,14 +40,13 @@ class Omsi {
     public function testReadProductName($model) {
         try {
             $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
-            echo "Great. You are connected!!!";
             $this->log->write("Great. You are connected!!!");
             if (is_resource($db)) {
                 echo "Great. You are connected!!!";
                 $this->log->write("Great. You are connected!!!");
             }
             $result = $db->query("select * from oc_product limit 1");
-            var_dump($result);
+            //var_dump($result);
         } catch (Exception $e) {
             echo "Pi4al'ka. :( ";
             $this->log->write("Pi4al'ka. :( ");
@@ -132,5 +131,11 @@ class Omsi {
 
     public function updateProducts($model) {
         $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
+    }
+
+    public function updateProductsCategories() {
+        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
+        $service = new ProductsService($this->registry, $db);
+        $service->rebuildCategoriesRelations();
     }
 }

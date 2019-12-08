@@ -15,13 +15,17 @@ class ProductsService {
     private $productsLoader;
     private $categoriesLoader;
 
-    public function __construct($db) {
+    private $log;
+
+    public function __construct($registry, $db) {
         $this->productsDbHelper = new ProductsDbHelper($db);
         $this->categoriesDbHelper = new CategoriesDbHelper($db);
         $this->seoUrlsDbHelper = new SeoUrlsDbHelper($db);
 
         $this->productsLoader = new ProductsLoader($db);
         $this->categoriesLoader = new CategoriesLoader($db);
+
+        $this->log = $registry->get('log');
     }
 
     public function deleteAllProducts() {
@@ -85,6 +89,28 @@ class ProductsService {
         }
 
         $this->rebuildSeoUrls();
+    }
+
+    public function rebuildCategoriesRelations() {
+        $productsIds = $this->productsDbHelper->getAllProductsIds();
+        foreach ($productsIds as $productIdRow) {
+            $productId = $productIdRow["product_id"];
+            $categoriesIds = $this->categoriesDbHelper->getCategoryIdByProductId($productId);
+
+            foreach ($categoriesIds as $categoryIdRow) {
+                $categoryId = $categoryIdRow["category_id"];
+                $this->insertIntoNextParentCategories($productId, $categoryId);
+            }
+        }
+    }
+
+    private function insertIntoNextParentCategories($productId, $categoryId) {
+        $categoriesIds = $this->categoriesDbHelper->getAllCategoriesExcludingCurrent($categoryId);
+        foreach ($categoriesIds as $categoryIdRow) {
+            $categoryId = $categoryIdRow["path_id"];
+            $this->productsDbHelper->insertProductIntoCategory2($productId, $categoryId);
+            $this->insertIntoNextParentCategories($productId, $categoryId);
+        }
     }
 
     private function rebuildSeoUrls() {

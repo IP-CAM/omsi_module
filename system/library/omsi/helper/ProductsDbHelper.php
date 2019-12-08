@@ -11,6 +11,13 @@ class ProductsDbHelper extends AbstractDbHelper {
         }
     }
 
+    public function getAllProductsIds() {
+        $result = $this->getDb()->query(SqlConstants::GET_ALL_PRODUCTS_IDS);
+        if ($result) {
+            return $result->rows;
+        }
+    }
+
     public function insertProduct(Product $product) {
         $data = array();
         $data[] = $product->getModel();
@@ -57,9 +64,13 @@ class ProductsDbHelper extends AbstractDbHelper {
             return;
         }
 
+        $this->insertProductIntoCategory2($product->getProductId(), $productCategory);
+    }
+
+    public function insertProductIntoCategory2($productId, $categoryId) {
         $data = array();
-        $data[] = $product->getProductId();
-        $data[] = $productCategory;
+        $data[] = $productId;
+        $data[] = $categoryId;
         $result = $this->getDb()->query(SqlConstants::INSERT_INTO_PRODUCT_TO_CATEGORY, $data);
         if ($result) {
             echo "Successfully inserted product into category <br>";
