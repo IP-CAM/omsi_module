@@ -81,8 +81,6 @@ class Omsi {
         } else if (count($foundCustomers) == 1) {
            $this->log->write("Customer with lastname " . $lastName . " was found in MoySklad. Linking...");
         }
-
-        $this->log->write(var_export($foundCustomers));
     }
 
     public function deleteAllProducts() {
