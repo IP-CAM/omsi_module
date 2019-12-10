@@ -197,7 +197,7 @@ class ProductsDbHelper extends AbstractDbHelper {
 
     public function isProductExists($model) {
         $result = $this->getDb()->query(SqlConstants::GET_PRODUCT_BY_MODEL, $model);
-        var_dump($result);
+
         if ($result->num_rows === 0) {
 
             return false;

@@ -106,8 +106,8 @@ class ProductsLoader extends BaseLoader {
         $product->setDescription(array_key_exists(P_DESC, $row) ? $row[P_DESC] : "");
 
         if (!array_key_exists(P_CODE, $row)) {
-            var_dump($row);
-       //     $this->logger->error("Code is empty! Stop!");
+
+            $this->logger->error("Code is empty! Stop!");
             die();
         } else {
             $product->setModel($row[P_CODE]);

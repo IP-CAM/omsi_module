@@ -55,7 +55,7 @@ class Omsi {
             $service = new CustomerService();
             $resultArray = $service->getCustomersByName($name);
             if (count($resultArray)) {
-                var_dump($resultArray);
+
             } else {
             }
     }
@@ -67,7 +67,6 @@ class Omsi {
         $lastName = $сustomerData['lastname'];
 
         $foundCustomers = $service->getCustomersByName($lastName);
-        var_dump($foundCustomers);
 
         if (count($foundCustomers) == 0) {
             $this->log->write("Customer with lastname " . $lastName . " was not found in MoySklad. Creating...");
@@ -75,7 +74,7 @@ class Omsi {
             $resultArray = $service->createCustomer($сustomerData['firstname'], $сustomerData['lastname'],
                 $сustomerData['email'], $сustomerData['telephone']);
             if (count($resultArray)) {
-                var_dump($resultArray);
+
             } else {
 
             }
