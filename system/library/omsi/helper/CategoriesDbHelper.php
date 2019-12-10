@@ -25,7 +25,7 @@ class CategoriesDbHelper extends AbstractDbHelper {
         $result = $this->getDb()->query(SqlConstants::INSERT_INTO_CATEGORY, $data);
         if ($result) {
             $resultId = parent::getLastInsertedId();
-            echo "Successfully inserted category with id " . $resultId . "<br>";
+
             return $resultId;
         }
     }
@@ -37,7 +37,6 @@ class CategoriesDbHelper extends AbstractDbHelper {
         $data[] = $category->getName();
         $result = $this->getDb()->query(SqlConstants::INSERT_INTO_CATEGORY_DESCRIPTION, $data);
         if ($result) {
-            echo "Successfully inserted category description <br>";
         }
     }
 
@@ -46,7 +45,7 @@ class CategoriesDbHelper extends AbstractDbHelper {
         $data[] = $category_id;
         $result = $this->getDb()->query(SqlConstants::INSERT_INTO_CATEGORY_TO_STORE, $data);
         if ($result) {
-            echo "Successfully inserted category into store <br>";
+
         }
     }
 
@@ -57,7 +56,7 @@ class CategoriesDbHelper extends AbstractDbHelper {
         $data[] = $category->getVersion();
         $result = $this->getDb()->query(SqlConstants::INSERT_INTO_MS_SAMOPEK_CATEGORY, $data);
         if ($result) {
-            echo "Successfully inserted category into oc_ms_samopek_category <br>";
+
         }
     }
 
@@ -68,14 +67,13 @@ class CategoriesDbHelper extends AbstractDbHelper {
         $data[] = $level;
         $result = $this->getDb()->query(SqlConstants::INSERT_INTO_CATEGORY_PATH, $data);
         if ($result) {
-            echo "Successfully inserted category path";
+
         }
     }
 
     public function getCategoriesParents() {
         $result = $this->getDb()->query(SqlConstants::GET_CATEGORY_ID_TO_PARENT_CATEGORY_ID);
-        var_dump($result);
-        echo "<br><br>";
+
         if ($result) {
             return $result;
         }
@@ -106,27 +104,27 @@ class CategoriesDbHelper extends AbstractDbHelper {
     public function deleteAllCategories() {
         $result = $this->getDb()->query(SqlConstants::DELETE_ALL_FROM_CATEGORY);
         if (!$result) {
-            echo "Delete from oc_category failed.";
+
         }
         $result = $this->getDb()->query(SqlConstants::DELETE_ALL_FROM_CATEGORY_DESCRIPTION);
         if (!$result) {
-            echo "Delete from oc_category_description failed.";
+
         }
         $result = $this->getDb()->query(SqlConstants::DELETE_ALL_FROM_CATEGORY_TO_STORE);
         if (!$result) {
-            echo "Delete from oc_category_to_store failed.";
+
         }
         $result = $this->getDb()->query(SqlConstants::DELETE_ALL_FROM_MS_SAMOPEK_CATEGORY);
         if (!$result) {
-            echo "Delete from oc_ms_samopek_category failed.";
+
         }
         $result = $this->getDb()->query(SqlConstants::DELETE_ALL_FROM_CATEGORY_PATH);
         if (!$result) {
-            echo "Delete from oc_category_path failed.";
+
         }
         $result = $this->getDb()->query(SqlConstants::DELETE_ALL_FROM_CATEGORY_TO_LAYOUT);
         if (!$result) {
-            echo "Delete from oc_category_to_layout failed.";
+
         }
     }
 }

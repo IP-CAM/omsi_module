@@ -8,11 +8,10 @@ class CustomersDbHelper extends AbstractDbHelper {
         $params[] = $customerId;
         $params[] = $customerMsUuid;
         $params[] = $customerVersion;
-        echo "PARAMS:";
-        var_dump($params);
+
         $result = $this->getDb()->query(SqlConstants::INSERT_INTO_MS_SAMOPEK_CUSTOMER, $params);
         if ($result) {
-            echo "Successfully inserted customer into oc_ms_samopek_customer <br>";
+
         }
     }
 
@@ -20,12 +19,10 @@ class CustomersDbHelper extends AbstractDbHelper {
         $params = array();
         $params[] = $email;
         $result = $this->getDb()->query(SqlConstants::GET_CUSTOMER_ID_BY_EMAIL, $params);
-        echo "RESULTTTTTTTT:";
-        var_dump($result);
+
         if ($result->num_rows == 1) {
             return $result->row['customer_id'];
         } else {
-            echo "Two customers with the same EMAIL. Dying..";
             die;
         }
     }
@@ -37,7 +34,6 @@ class CustomersDbHelper extends AbstractDbHelper {
         if ($result->num_rows == 1) {
             return $result->row['ms_customer_uuid'];
         } else {
-            //echo "Two customers for the same ORDER. Dying..";
             return null;
         }
     }

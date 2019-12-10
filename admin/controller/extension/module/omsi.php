@@ -15,7 +15,6 @@ class ControllerExtensionModuleOmsi extends Controller {
         $obj_omsi = Omsi::get_instance($this->registry);
 
         if (isset($this->request->get['product_model'])) {
-            echo "OK" .PHP_EOL;
             $this->log->write("MAKO TEST auhhhh");
             $this->testOmsi($this->request->get['product_model']);
         } else if (isset($this->request->get['deleteAllProducts'])) {
@@ -29,7 +28,6 @@ class ControllerExtensionModuleOmsi extends Controller {
         } else if (isset($this->request->get['update_products_categories'])) {
             $obj_omsi->updateProductsCategories();
         } else {
-            echo "Achtung" .PHP_EOL;
             $this->log->write("Achtung");
             if (!isset($this->request->get['module_id'])) {
                 $module_id = $this->addModule();
@@ -77,7 +75,7 @@ class ControllerExtensionModuleOmsi extends Controller {
         $obj_omsi->testReadProductName($model);
         //$obj_omsi->testGetCustomerByName('Татьяна');
         //$obj_omsi->сreateCustomer('Татьяна', 'Ааап', 'test@test.ru');
-        echo "updateProduct" .PHP_EOL;
+
         $json = array();
 
         $json['success'] = 'success';

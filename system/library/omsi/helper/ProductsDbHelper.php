@@ -29,7 +29,6 @@ class ProductsDbHelper extends AbstractDbHelper {
         $result = $this->getDb()->query(SqlConstants::INSERT_INTO_PRODUCT, $data);
         if ($result) {
             $resultId = parent::getLastInsertedId();
-            echo "Successfully inserted product with id " . $resultId . "<br>";
             return $resultId;
         }
     }
@@ -42,7 +41,7 @@ class ProductsDbHelper extends AbstractDbHelper {
         $data[] = $product->getMetaTitle();
         $result = $this->getDb()->query(SqlConstants::INSERT_INTO_PRODUCT_DESCRIPTION, $data);
         if ($result) {
-            echo "Successfully inserted product description <br>";
+
         }
     }
 
@@ -51,7 +50,7 @@ class ProductsDbHelper extends AbstractDbHelper {
         $data[] = $product_id;
         $result = $this->getDb()->query(SqlConstants::INSERT_INTO_PRODUCT_TO_STORE, $data);
         if ($result) {
-            echo "Successfully inserted product into store <br>";
+
         }
     }
 
@@ -73,7 +72,7 @@ class ProductsDbHelper extends AbstractDbHelper {
         $data[] = $categoryId;
         $result = $this->getDb()->query(SqlConstants::INSERT_INTO_PRODUCT_TO_CATEGORY, $data);
         if ($result) {
-            echo "Successfully inserted product into category <br>";
+
         }
     }
 
@@ -94,7 +93,7 @@ class ProductsDbHelper extends AbstractDbHelper {
         $data[] = $product->getVersion();
         $result = $this->getDb()->query(SqlConstants::INSERT_INTO_MS_SAMOPEK_PRODUCT, $data);
         if ($result) {
-            echo "Successfully inserted product into oc_ms_samopek_products <br>";
+
         }
     }
 
@@ -183,7 +182,6 @@ class ProductsDbHelper extends AbstractDbHelper {
     public function getProductVersion($productId) {
         $result = $this->getDb()->query(SqlConstants::GET_VERSION_BY_PRODUCT_ID, $productId);
         if ($result) {
-            echo "Successfully got version " . $result->row['ms_version'] . " for product " . $productId . "<br>";
             return $result->row['ms_version'];
         }
     }
@@ -191,9 +189,9 @@ class ProductsDbHelper extends AbstractDbHelper {
     public function getProductByModel($model) {
         $result = $this->getDb()->query(SqlConstants::GET_PRODUCT_BY_MODEL, $model);
         if ($result->num_rows === 0) {
-            echo "Product with model = " . $model . " not found!";
+
         } else {
-            echo "ProductId = " . $result->row['product_id'] . " ProductModel = " . $result->row['model'] . "<br>";
+
         }
     }
 
@@ -201,10 +199,10 @@ class ProductsDbHelper extends AbstractDbHelper {
         $result = $this->getDb()->query(SqlConstants::GET_PRODUCT_BY_MODEL, $model);
         var_dump($result);
         if ($result->num_rows === 0) {
-            echo "Product with Model = " . $model . " NOT exists!";
+
             return false;
         } else {
-            echo "Product with Model = " . $model . " exists!";
+
             return true;
         }
     }
@@ -237,7 +235,7 @@ class ProductsDbHelper extends AbstractDbHelper {
         $result = $this->getDb()->query(SqlConstants::GET_PRODUCTS_BY_ORDER_ID, $data);
 
         if ($result->num_rows > 0) {
-            //echo "RES " . var_export($result);
+
             return $result->rows;
         }
     }
@@ -250,9 +248,9 @@ class ProductsDbHelper extends AbstractDbHelper {
     public function getProductUuidByProductId($productId) {
         $data = array();
         $data[] = $productId;
-        //echo "PRODUCT " . $productId;
+
         $result = $this->getDb()->query(SqlConstants::GET_PRODUCT_UUID_BY_PRODUCT_ID, $data);
-       // echo "RESULT " . $result;
+
         return $result->row["ms_uuid"];
     }
 
@@ -282,11 +280,11 @@ class ProductsDbHelper extends AbstractDbHelper {
         $result = $this->getDb()->query(SqlConstants::GET_VERSION_BY_PRODUCT_ID, $data);
 
         if ($result->num_rows === 0) {
-            echo "Product with ID = " . $product->getProductId() . " NOT exists!";
+
             return false;
         } else {
             if ($product->getVersion() > $result->row['ms_version']) {
-                echo "Product with ID = " . $product->getProductId() . " was updated in MySklad, updating in Opencart";
+
                 $data = array();
                 $data[] = $product->getPrice();
                 $data[] = $product->getImage();
@@ -304,7 +302,7 @@ class ProductsDbHelper extends AbstractDbHelper {
                 $this->getDb()->query(SqlConstants::UPDATE_MS_SAMOPEK_PRODUCT, $data);
                 return true;
             } else {
-                echo "Product with ID = " . $product->getProductId() . " was NOT updated in MySklad, skipping update";
+
                 return false;
             }
         }
@@ -323,30 +321,30 @@ class ProductsDbHelper extends AbstractDbHelper {
     public function updateProductVersion(Product $product) {
         $result = $this->getDb()->query(SqlConstants::UPDATE_MS_SAMOPEK_PRODUCT, $product->getVersion(), $product->getProductId());
         if ($result) {
-            echo "Successfully updated product version to " . $product->getVersion() . " for product " . $product->getModel() . "<br>";
+
         }
     }
 
     public function deleteAllProducts() {
         $result = $this->getDb()->query(SqlConstants::DELETE_ALL_FROM_PRODUCT);
         if (!$result) {
-            echo "Delete from oc_product failed.";
+
         }
         $result = $this->getDb()->query(SqlConstants::DELETE_ALL_FROM_PRODUCT_DESCRIPTION);
         if (!$result) {
-            echo "Delete from oc_product_description failed.";
+
         }
         $result = $this->getDb()->query(SqlConstants::DELETE_ALL_FROM_PRODUCT_TO_STORE);
         if (!$result) {
-            echo "Delete from oc_product_to_store failed.";
+
         }
         $result = $this->getDb()->query(SqlConstants::DELETE_ALL_FROM_PRODUCT_TO_CATEGORY);
         if (!$result) {
-            echo "Delete from oc_product_to_category failed.";
+
         }
         $result = $this->getDb()->query(SqlConstants::DELETE_ALL_FROM_MS_SAMOPEK_PRODUCT);
         if (!$result) {
-            echo "Delete from oc_product_description failed.";
+
         }
     }
 }

@@ -17,11 +17,11 @@ class SeoUrlsDbHelper extends AbstractDbHelper {
             $result = $this->getDb()->query(SqlConstants::INSERT_INTO_SEO_URL, $data);
             if ($result) {
                 $resultId = parent::getLastInsertedId();
-                echo "Successfully inserted seo URL with id " . $resultId . "<br>";
+
                 return $resultId;
             }
         } else {
-            echo "Seo URL for product/category " . $id . "already exists. <br>";
+
         }
     }
 

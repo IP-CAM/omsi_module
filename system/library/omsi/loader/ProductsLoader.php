@@ -70,7 +70,6 @@ class ProductsLoader extends BaseLoader {
         } while ($i < 30);
 
         $time_end = microtime(true);
-        echo "Loaded assortment in " . ($time_end - $time_start) . " sec." . PHP_EOL;
         return $assortment;
     }
 

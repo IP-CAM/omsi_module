@@ -37,11 +37,11 @@ class OrderService extends BaseLoader {
                 "agent" => $customerMetadata,
                 "positions" => $positions
             );
-            echo "RES " . var_export($positions);
+
             $url = URL_BASE . URL_GET_CUSTOMER_ORDER;
             $resultArray = parent::post($url, $data);
             if ($resultArray != false) {
-                echo "RESULT " . var_export($resultArray);
+
             }
             return $resultArray;
         }

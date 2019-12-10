@@ -12,7 +12,6 @@ class BaseLoader {
         $resArr = json_decode($response, true);
 
         if ($response === false) $response = curl_error($this->curl);
-        //echo stripslashes($response);
 
         curl_close($this->curl);
 

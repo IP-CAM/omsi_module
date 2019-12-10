@@ -13,7 +13,6 @@ class CustomerService extends BaseLoader {
 
     public function getCustomersByName($name) {
         $url = URL_BASE . URL_GET_CUSTOMER . "?" . URL_PARAM_SEARCH . urlencode($name);
-        echo $url;
 
         $resultArray = parent::load($url);
         return $resultArray['rows'];
@@ -27,12 +26,12 @@ class CustomerService extends BaseLoader {
                 if (count($foundCustomers) === 0) {
                     $this->createCustomer($customer['firstname'], $customer['lastname'], $customer['email'], $customer['telephone']);
                 } else {
-                    echo "Customer " . $customer['name'] . " already exists in MoySklad. Just linking..." . PHP_EOL;
+
                     $this->linkCustomer($foundCustomers[0], $customer['customer_id']);
                 }
             }
         } else {
-            echo "Nothing to sync. All customers synced" . PHP_EOL;
+
         }
     }
 

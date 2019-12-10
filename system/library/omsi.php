@@ -42,13 +42,10 @@ class Omsi {
             $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
             $this->log->write("Great. You are connected!!!");
             if (is_resource($db)) {
-                echo "Great. You are connected!!!";
                 $this->log->write("Great. You are connected!!!");
             }
             $result = $db->query("select * from oc_product limit 1");
-            //var_dump($result);
         } catch (Exception $e) {
-            echo "Pi4al'ka. :( ";
             $this->log->write("Pi4al'ka. :( ");
         }
     }
@@ -58,10 +55,8 @@ class Omsi {
             $service = new CustomerService();
             $resultArray = $service->getCustomersByName($name);
             if (count($resultArray)) {
-                echo "Great. Here is result";
                 var_dump($resultArray);
             } else {
-                echo "No result";
             }
     }
 
@@ -75,23 +70,20 @@ class Omsi {
         var_dump($foundCustomers);
 
         if (count($foundCustomers) == 0) {
-            echo "Customer with lastname " . $lastName . " was not found in MoySklad. Creating...";
-           // $this->log->write("Customer with lastname " . $lastName . " was not found in MoySklad. Creating...");
+            $this->log->write("Customer with lastname " . $lastName . " was not found in MoySklad. Creating...");
 
             $resultArray = $service->createCustomer($сustomerData['firstname'], $сustomerData['lastname'],
                 $сustomerData['email'], $сustomerData['telephone']);
             if (count($resultArray)) {
-                echo "Great. Here is result";
                 var_dump($resultArray);
             } else {
-                echo "No result";
+
             }
         } else if (count($foundCustomers) == 1) {
-            echo "Customer with lastname " . $lastName . " was found in MoySklad. Linking...";
-           // $this->log->write("Customer with lastname " . $lastName . " was found in MoySklad. Linking...");
+           $this->log->write("Customer with lastname " . $lastName . " was found in MoySklad. Linking...");
         }
 
-      //  $this->log->write(var_export($foundCustomers));
+        $this->log->write(var_export($foundCustomers));
     }
 
     public function deleteAllProducts() {
@@ -122,9 +114,6 @@ class Omsi {
         $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
         $service = new OrderService($db);
         $result = $service->createOrder($orderData[0], $orderData[1]);
-        //echo "Order data:" . PHP_EOL;
-       // echo $result;
-        //$this->log->write(var_export($orderData));
 
         return $orderData;
     }

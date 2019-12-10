@@ -39,7 +39,6 @@ class ProductsService {
         $categories = $this->categoriesLoader->loadAllCategories();
         foreach ($categories as $category) {
             if ($category instanceof Category) {
-                echo "1";
                 $category->setCategoryId($this->categoriesDbHelper->insertCategory($category));
                 $this->categoriesDbHelper->insertCategoryDescription($category);
                 $this->categoriesDbHelper->insertCategoryIntoStore($category->getCategoryId());
@@ -51,8 +50,6 @@ class ProductsService {
 
         $mapCategoriesParents = array();
         foreach ($categoriesParents->rows as $row) {
-            //var_dump($row);
-            echo "row <br>";
             $mapCategoriesParents[$row['category_id']] = $row['parent_category_id'];
         }
         print_r($mapCategoriesParents);
@@ -114,7 +111,6 @@ class ProductsService {
     }
 
     private function rebuildSeoUrls() {
-        echo "Start SEO URLs sync." . PHP_EOL;
         $this->seoUrlsDbHelper->cleanSeoUrls();
         $products = $this->productsDbHelper->getAllProductsWithNames();
         foreach ($products as $product) {
@@ -124,23 +120,19 @@ class ProductsService {
         foreach ($categories as $category) {
             $this->seoUrlsDbHelper->insertSeoUrl($category['category_id'], CommonUtils::getSeoUrl($category['name']), true);
         }
-        echo "End SEO URLs sync." . PHP_EOL;
     }
 
     private function fillCategories($mapCategoriesParents) {
         foreach ($mapCategoriesParents as $categoryId=>$parent) {
             $level = 0;
             $this->getCategoryLevel($mapCategoriesParents, $categoryId, $level);
-            echo "CALL " . $categoryId . " + " . $level . "<br>";
             $this->insertCategoryPath($mapCategoriesParents, $categoryId, $categoryId, $level);
         }
     }
 
     private function insertCategoryPath($mapCategoriesParents, $categoryId, $parentCategoryId, $level) {
-        echo "START " . $categoryId . " + " . $parentCategoryId . " + " . $level . "<br>";
         $this->categoriesDbHelper->insertCategoryPath($categoryId, $parentCategoryId, $level);
         if ($level != 0) {
-            echo $categoryId . " + " . $parentCategoryId . " + " . $level . "<br>";
             $this->insertCategoryPath($mapCategoriesParents, $categoryId, $mapCategoriesParents[$categoryId], --$level);
         }
     }
