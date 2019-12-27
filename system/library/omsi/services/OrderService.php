@@ -56,6 +56,7 @@ class OrderService extends BaseLoader {
             $product['quantity'] = intval($productFromOrder['quantity']);
             $product['price'] = floatval($productFromOrder['price']) * 100;
             $product['assortment'] = $this->creteAssortment($productFromOrder['product_id']);
+            $product['reserve'] = intval($productFromOrder['quantity']);
             $products[] = $product;
         }
         return $products;
