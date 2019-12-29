@@ -18,14 +18,13 @@ class ProductsService {
     private $log;
 
     public function __construct($registry, $db) {
+        $this->log = $registry->get('log');
         $this->productsDbHelper = new ProductsDbHelper($db);
         $this->categoriesDbHelper = new CategoriesDbHelper($db);
         $this->seoUrlsDbHelper = new SeoUrlsDbHelper($db);
 
-        $this->productsLoader = new ProductsLoader($db);
+        $this->productsLoader = new ProductsLoader($db, $this->log);
         $this->categoriesLoader = new CategoriesLoader($db);
-
-        $this->log = $registry->get('log');
     }
 
     public function deleteAllProducts() {
@@ -57,35 +56,42 @@ class ProductsService {
     }
 
     public function syncProducts($count) {
+        $this->log->write("Loading " . $count . " products...");
         $products = $this->productsLoader->loadProducts($count);
+        $this->log->write("End Loading ");
+        $this->log->write(var_export($products, true));
         foreach ($products as $product) {
-            $product_id = $this->productsDbHelper->getProductIdIfExists($product->getModel());
-            if ($product_id) {
-                $product->setProductId($product_id);
-            }
-
-            if ($product_id) {
-                //$product_version = $this->dbHelper->getProductVersion($product_id);
-                //if ($product->getVersion() > $product_version) {
-                $this->logger->warn("Version for product with ms_id " . $product->getModel() . " was changed. Updating product...");
-                $this->productsDbHelper->updateProduct($product);
-                //} else {
-                //  $this->logger->info( "Product with ms_id " . $product->getModel() . " doesn't need to be updated.");
-                //}
-            } else {
-                //$this->logger->warn("Product with ms_id " . $product->getModel() . " doesn't exists. Adding...");
-                $product->setProductId($this->productsDbHelper->insertProduct($product));
-                $this->productsDbHelper->insertProductDescription($product);
-                $this->productsDbHelper->insertProductIntoStore($product->getProductId());
-                $this->productsDbHelper->insertProductIntoTechnicalTable($product);
-                $this->productsDbHelper->insertProductIntoCategory($product);
-            }
-            // $this->dbHelper->insertProductAttributes($product);
-
-           // $this->dbHelper->closeTransaction();
+            $this->updateOrCreateProduct($product);
         }
 
         $this->rebuildSeoUrls();
+    }
+
+    private function updateOrCreateProduct(Product $product) {
+        $product_id = $this->productsDbHelper->getProductIdIfExists($product->getModel());
+        if ($product_id) {
+            $product->setProductId($product_id);
+        }
+
+        if ($product_id) {
+            //$product_version = $this->dbHelper->getProductVersion($product_id);
+            //if ($product->getVersion() > $product_version) {
+            $this->log->write("Version for product with ms_id " . $product->getModel() . " was changed. Updating product...");
+            $this->productsDbHelper->updateProduct($product);
+            //} else {
+            //  $this->logger->info( "Product with ms_id " . $product->getModel() . " doesn't need to be updated.");
+            //}
+        } else {
+            //$this->logger->warn("Product with ms_id " . $product->getModel() . " doesn't exists. Adding...");
+            $product->setProductId($this->productsDbHelper->insertProduct($product));
+            $this->productsDbHelper->insertProductDescription($product);
+            $this->productsDbHelper->insertProductIntoStore($product->getProductId());
+            $this->productsDbHelper->insertProductIntoTechnicalTable($product);
+            $this->productsDbHelper->insertProductIntoCategory($product);
+        }
+        // $this->dbHelper->insertProductAttributes($product);
+
+        // $this->dbHelper->closeTransaction();
     }
 
     public function rebuildCategoriesRelations() {
@@ -99,6 +105,11 @@ class ProductsService {
                 $this->insertIntoNextParentCategories($productId, $categoryId);
             }
         }
+    }
+
+    public function updateProduct($productId) {
+        $product = $this->productsLoader->loadProduct($productId);
+        $this->updateOrCreateProduct($product);
     }
 
     private function insertIntoNextParentCategories($productId, $categoryId) {

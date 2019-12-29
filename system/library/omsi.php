@@ -10,7 +10,7 @@ class Omsi {
     private static $instance;
     private $db;
     private $registry;
-    //private $log;
+    private $log;
 
     /**
      * @param object $registry Registry Object
@@ -26,15 +26,6 @@ class Omsi {
     public function __construct($registry) {
         $this->registry = $registry;
         $this->log = $registry->get('log');
-    }
-
-    public function updateProduct($model) {
-        $productsLoader = new ProductsLoader();
-        $productsLoader->loadProduct('002223');
-    }
-
-    public function ifCustomerExists($name, $surname) {
-
     }
 
     public function testReadProductName($model) {
@@ -85,19 +76,19 @@ class Omsi {
 
     public function deleteAllProducts() {
         $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
-        $productsService = new ProductsService($db);
+        $productsService = new ProductsService($this->registry, $db);
         $productsService->deleteAllProducts();
     }
 
     public function synchronizeCategories() {
         $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
-        $productsService = new ProductsService($db);
+        $productsService = new ProductsService($this->registry, $db);
         $productsService->syncCategories();
     }
 
     public function synchronizeProducts($count) {
         $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
-        $productsService = new ProductsService($db);
+        $productsService = new ProductsService($this->registry, $db);
         $productsService->syncProducts($count);
     }
 
@@ -123,5 +114,11 @@ class Omsi {
         $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
         $service = new ProductsService($this->registry, $db);
         $service->rebuildCategoriesRelations();
+    }
+
+    public function updateProduct($productId) {
+        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
+        $service = new ProductsService($this->registry, $db);
+        $service->updateProduct($productId);
     }
 }

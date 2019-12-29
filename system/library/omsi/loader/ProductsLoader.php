@@ -8,14 +8,29 @@ class ProductsLoader extends BaseLoader {
     // ToDo: Remove from here!!!
     private $productsHelper;
 
-    public function __construct($db) {
+    private $logger;
+
+    public function __construct($db, $logger) {
         $this->productsHelper = new ProductsDbHelper($db);
+        $this->logger = $logger;
     }
 
-    public function loadProduct($productModel) {
-        $assortment = $this->loadAssortment();
-
+    public function loadProduct($productModel, $assortment = null) {
+        $this->loadProductsAttributesMetadata();
+        if ($assortment == null) {
+            $assortment = $this->loadAssortment();
+        }
         $url = URL_BASE . URL_GET_PRODUCT . "?" . URL_PARAM_FILTER . URL_PARAM_CODE . $productModel;
+        $this->logger->write($url);
+        $resultArray = parent::load($url);
+        foreach ($resultArray['rows'] as $row) {
+            // Assume that there is always only one row in response
+            $product = $this->fillData($row, $assortment);
+            $this->logger->write(var_export($product, true));
+            return $product;
+        }
+        $this->logger->write("Cannot fetch product with " . $productModel . " from MoySklad.");
+        return null;
     }
 
     public function loadProducts($count) {
@@ -84,6 +99,9 @@ class ProductsLoader extends BaseLoader {
             foreach ($resultArray['rows'] as $row) {
                 $products[] = $this->fillData($row, $assortment);
                 $count++;
+                if ($count >= $requestedCount) {
+                    break;
+                }
             }
             $offset += 100;
             $i++;
