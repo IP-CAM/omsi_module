@@ -33,6 +33,112 @@ class ProductsLoader extends BaseLoader {
         return null;
     }
 
+    // Quantity changed or product version changed
+    /**
+     * Product is updated if:
+     * - quantity changed
+     * - product version changed
+     * - product not exists in DB at all
+     */
+    public function loadUpdatedProducts($onlyProductsInDb = false) {
+        $productsForQuantityUpdate = array();
+        $productsNotExist = array();
+        // Load from MS
+        $quantitiesMS = $this->loadAssortment();
+        // Read from DB
+        $quantitiesDB = $this->productsHelper->getAllProductsWithQuantity();
+
+        foreach ($quantitiesMS as $codeMS=>$quantityMS) {
+            if (!array_key_exists($codeMS, $quantitiesDB)) {
+                if (!$onlyProductsInDb) {
+                    $productsNotExist[$codeMS] = null;
+                }
+            } else {
+                $quantityDB = $quantitiesDB[$codeMS];
+                if ($quantityDB != $quantityMS) {
+                    $this->logger->write("Product " . $codeMS . " quantity changed. SITE = " . $quantityDB . " MS = " . $quantityMS);
+                    $productsForQuantityUpdate[$codeMS] = null;
+                }
+            }
+        }
+        $this->logger->write(count($productsForQuantityUpdate) . " products for quantity update:");
+        $this->logger->write(implode(", ", array_keys($productsForQuantityUpdate)));
+
+        $productsForVersionUpdate = array();
+
+
+        // Load from MS
+        $versionsMS = $this->loadAllProductsWithVersions();
+        // Read from DB
+        $versionsDB = $this->productsHelper->getAllProductsWithVersions();
+        foreach($versionsMS as $codeMS=>$versionMS) {
+            if (!array_key_exists($codeMS, $versionsDB)) {
+                if (!$onlyProductsInDb) {
+                    $productsNotExist[$codeMS] = null;
+                }
+            } else{
+                $versionDB = $versionsDB[$codeMS];
+                if ($versionDB != $versionMS) {
+                    $this->logger->write("Product " . $codeMS . " version changed. SITE = " . $versionDB . " MS = " . $versionMS);
+                    $productsForVersionUpdate[$codeMS] = null;
+                }
+            }
+        }
+
+        $this->logger->write(count($productsForVersionUpdate) . " products for version update:");
+        $this->logger->write(implode(", ", array_keys($productsForVersionUpdate)));
+
+        $this->logger->write(count($productsNotExist) . " products not exists in DB:");
+        $this->logger->write(implode(", ", array_keys($productsNotExist)));
+
+        $products = array();
+
+        $productsForUpdate = array_merge($productsForQuantityUpdate, $productsForVersionUpdate, $productsNotExist);
+        $productsForUpdate = array_slice($productsForUpdate, 0, 200);
+        $productsAmount = count($productsForUpdate);
+        $this->logger->write("Merged result: " . $productsAmount . " products will be added or updated.");
+
+        echo "Merged result: " . $productsAmount . " products will be added or updated." . PHP_EOL;
+
+        $k = 0;
+        $percentMult = 0;
+        foreach ($productsForUpdate as $productKey=>$productValue) {
+            $k++;
+            $product = $this->loadProduct($productKey, $quantitiesMS);
+            if ($product != null) {
+                $products[] = $product;
+            } else {
+                // The fact that we cannot fetch the product tells us that the product most likely was archived.
+                // Lets remove from OpenCart as well
+
+            }
+            if (((100*$k)/$productsAmount) > $percentMult + 5) {
+                $percentMult = $percentMult + 5;
+                echo  $percentMult . "% " . "(" . $k . ") Loaded" . PHP_EOL;
+            }
+        }
+
+        $this->logger->write("Prepared " . count($products) . " products to insert into DB.");
+
+        return $products;
+    }
+
+    public function loadAllProductsWithVersions() {
+        $products = array();
+        $offset = 0;
+        $i = 0;
+        do {
+            $url = URL_BASE . URL_GET_PRODUCT . "?" . URL_PARAM_OFFSET . $offset . "&" . URL_PARAM_LIMIT;
+            $resultArray = parent::load($url);
+            foreach ($resultArray['rows'] as $row) {
+                $products[$row[P_CODE]] = $row[MS_VERSION];
+            }
+            $offset += 100;
+            $i++;
+        } while ($i < 30);
+        return $products;
+    }
+
     public function loadProducts($count) {
         $assortment = $this->loadAssortment();
         $this->loadProductsAttributesMetadata();

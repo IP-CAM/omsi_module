@@ -108,8 +108,15 @@ class ProductsService {
     }
 
     public function updateProduct($productId) {
-        $product = $this->productsLoader->loadProduct($productId);
-        $this->updateOrCreateProduct($product);
+        if ($productId == null) {
+            $products = $this->productsLoader->loadUpdatedProducts(true);
+            foreach ($products as $product) {
+                $this->updateOrCreateProduct($product);
+            }
+        } else {
+            $product = $this->productsLoader->loadProduct($productId);
+            $this->updateOrCreateProduct($product);
+        }
     }
 
     private function insertIntoNextParentCategories($productId, $categoryId) {

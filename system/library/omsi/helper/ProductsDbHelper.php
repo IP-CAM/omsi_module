@@ -11,6 +11,28 @@ class ProductsDbHelper extends AbstractDbHelper {
         }
     }
 
+    public function getAllProductsWithQuantity() {
+        $result = $this->getDb()->query(SqlConstants::GET_ALL_PRODUCTS_MODELS_WITH_QUANTITIES);
+        if ($result) {
+            $resultMap = array();
+            foreach ($result->rows as $row) {
+                $resultMap[$row['model']] = $row['quantity'];
+            }
+            return $resultMap;
+        }
+    }
+
+    public function getAllProductsWithVersions() {
+        $result = $this->getDb()->query(SqlConstants::GET_ALL_PRODUCTS_MODELS_WITH_VERSIONS);
+        if ($result) {
+            $resultMap = array();
+            foreach ($result->rows as $row) {
+                $resultMap[$row['model']] = $row['ms_version'];
+            }
+            return $resultMap;
+        }
+    }
+
     public function getAllProductsIds() {
         $result = $this->getDb()->query(SqlConstants::GET_ALL_PRODUCTS_IDS);
         if ($result) {

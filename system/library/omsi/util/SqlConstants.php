@@ -9,6 +9,15 @@ class SqlConstants {
          FROM oc_product pr, oc_product_description descr
          WHERE pr.product_id = descr.product_id;";
 
+    const GET_ALL_PRODUCTS_MODELS_WITH_QUANTITIES =
+        "SELECT model, quantity
+         FROM oc_product";
+
+    const GET_ALL_PRODUCTS_MODELS_WITH_VERSIONS =
+        "SELECT product.model, prVersion.ms_version
+         FROM oc_ms_samopek_product prVersion, oc_product product
+         WHERE prVersion.product_id = product.product_id";
+
     const GET_ALL_CATEGORIES_IDS_WITH_NAMES =
         "SELECT cat.category_id, descr.name
          FROM oc_category cat, oc_category_description descr
