@@ -1,4 +1,8 @@
 <?php
+    // Values
+    define("V_TRUE", "true");
+    define("V_FALSE", "false");
+
     // product
     define("P_DESC", "description");
     define("P_CODE", "code");
@@ -50,4 +54,7 @@
     define("URL_PARAM_FILTER", "filter=");
     define("URL_PARAM_CODE", "code=");
     define("URL_PARAM_SEARCH", "search=");
+
+    // UUIDs
+    define("ATTRIBUTE_FEATURED_UUID", "817637a8-032e-11ea-0a80-04df000568e1");
 ?>

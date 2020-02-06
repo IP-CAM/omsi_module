@@ -56,6 +56,8 @@ class Product {
     // oc_ms_samopek_products
     private $version;
 
+    private $featured;
+
     /**
      * @return mixed
      */
@@ -726,6 +728,22 @@ class Product {
     public function setAttributes($attributes)
     {
         $this->attributes = $attributes;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFeatured()
+    {
+        return $this->featured;
+    }
+
+    /**
+     * @param mixed $featured
+     */
+    public function setFeatured($featured)
+    {
+        $this->featured = $featured;
     }
 }
 ?>

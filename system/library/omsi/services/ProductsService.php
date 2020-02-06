@@ -63,7 +63,7 @@ class ProductsService {
         foreach ($products as $product) {
             $this->updateOrCreateProduct($product);
         }
-
+        $this->updateFeaturedProducts($products);
         $this->rebuildSeoUrls();
     }
 
@@ -92,6 +92,24 @@ class ProductsService {
         // $this->dbHelper->insertProductAttributes($product);
 
         // $this->dbHelper->closeTransaction();
+    }
+
+    public function updateFeaturedProducts($products) {
+        $productIds = array();
+
+        foreach ($products as $product) {
+            $attributes = $product->getAttributes();
+
+            if ($attributes != NULL) {
+                foreach ($attributes as $attribute) {
+                    if ($attribute->getAttributeId() == ATTRIBUTE_FEATURED_UUID &&
+                        $attribute->getValue() == V_TRUE) {
+                        $productIds[] = $product->getProductId();
+                    }
+                }
+            }
+        }
+        $this->productsDbHelper->updateFeaturedProducts($productIds);
     }
 
     public function rebuildCategoriesRelations() {

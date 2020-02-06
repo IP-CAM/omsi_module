@@ -83,6 +83,11 @@ class SqlConstants {
          WHERE ord.customer_id = cust.customer_id
            AND ord.order_id = ?";
 
+    const GET_FEATURED_MODULES_SETTING =
+        "SELECT module_id, setting
+         FROM oc_module
+         WHERE `code` = 'featured'";
+
     // INSERTs
     const INSERT_INTO_PRODUCT =
         "INSERT INTO oc_product
@@ -313,6 +318,11 @@ class SqlConstants {
          SET name = ? 
          WHERE language_id = 1
            AND attribute_id = ?";
+
+    const UPDATE_FEATURED_MODULES_SETTING =
+        "UPDATE oc_module
+         SET setting = ?
+         WHERE module_id = ?";
 
     // DELETEs
     const DELETE_FROM_PRODUCT = "DELETE FROM oc_product where product_id = ?";

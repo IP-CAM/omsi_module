@@ -88,6 +88,26 @@ class ProductsDbHelper extends AbstractDbHelper {
         $this->insertProductIntoCategory2($product->getProductId(), $productCategory);
     }
 
+    public function updateFeaturedProducts($productsIds) {
+        $result = $this->getDb()->query(SqlConstants::GET_FEATURED_MODULES_SETTING);
+
+        if ($result->num_rows > 0) {
+            foreach ($result->rows as $row) {
+
+                $setting = str_replace("\"", "", json_decode($row['setting'], true));
+                if (!array_key_exists('product', $setting)) {
+                    $setting['product'] = array();
+                }
+                $setting['product'] = $productsIds;
+
+                $data = array();
+                $data[] = json_encode($setting);
+                $data[] = $row['module_id'];
+                $result = $this->getDb()->query(SqlConstants::UPDATE_FEATURED_MODULES_SETTING, $data);
+            }
+        }
+    }
+
     public function insertProductIntoCategory2($productId, $categoryId) {
         $data = array();
         $data[] = $productId;
