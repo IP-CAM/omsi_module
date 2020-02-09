@@ -17,24 +17,21 @@ class ProductsService {
 
     private $log;
 
-    public function __construct($registry, $db) {
-        $this->log = $registry->get('log');
+    public function __construct($db, $log) {
+        $this->log = $log;
         $this->productsDbHelper = new ProductsDbHelper($db);
         $this->categoriesDbHelper = new CategoriesDbHelper($db);
         $this->seoUrlsDbHelper = new SeoUrlsDbHelper($db);
-
         $this->productsLoader = new ProductsLoader($db, $this->log);
         $this->categoriesLoader = new CategoriesLoader($db);
     }
 
     public function deleteAllProducts() {
         $this->productsDbHelper->deleteAllProducts();
-        $this->categoriesDbHelper->deleteAllCategories();
     }
 
     public function syncCategories() {
         $this->categoriesDbHelper->deleteAllCategories();
-
         $categories = $this->categoriesLoader->loadAllCategories();
         foreach ($categories as $category) {
             if ($category instanceof Category) {
@@ -51,18 +48,18 @@ class ProductsService {
         foreach ($categoriesParents->rows as $row) {
             $mapCategoriesParents[$row['category_id']] = $row['parent_category_id'];
         }
-        print_r($mapCategoriesParents);
+        $this->log->write(var_export($mapCategoriesParents, true));
         $this->fillCategories($mapCategoriesParents);
     }
 
     public function syncProducts($count) {
         $this->log->write("Loading " . $count . " products...");
-        $products = $this->productsLoader->loadProducts($count);
+        $products = $this->productsLoader->loadUpdatedProducts();
         $this->log->write("End Loading ");
-        $this->log->write(var_export($products, true));
         foreach ($products as $product) {
             $this->updateOrCreateProduct($product);
         }
+
         $this->updateFeaturedProducts($products);
         $this->rebuildSeoUrls();
     }
@@ -76,8 +73,9 @@ class ProductsService {
         if ($product_id) {
             //$product_version = $this->dbHelper->getProductVersion($product_id);
             //if ($product->getVersion() > $product_version) {
-            $this->log->write("Version for product with ms_id " . $product->getModel() . " was changed. Updating product...");
-            $this->productsDbHelper->updateProduct($product);
+            //$this->log->write("Version for product with ms_id " . $product->getModel() . " was changed. Updating product...");
+            //$this->log->write("Quantity for product with ms_id " . $product->getModel() . " - " . $product->getQuantity());
+            $this->productsDbHelper->updateProduct($product, true); // BigQuestion about flag - temp solution
             //} else {
             //  $this->logger->info( "Product with ms_id " . $product->getModel() . " doesn't need to be updated.");
             //}
@@ -95,21 +93,24 @@ class ProductsService {
     }
 
     public function updateFeaturedProducts($products) {
-        $productIds = array();
+        $featProducts = array();
 
         foreach ($products as $product) {
             $attributes = $product->getAttributes();
 
             if ($attributes != NULL) {
                 foreach ($attributes as $attribute) {
-                    if ($attribute->getAttributeId() == ATTRIBUTE_FEATURED_UUID &&
-                        $attribute->getValue() == V_TRUE) {
-                        $productIds[] = $product->getProductId();
+                    if ($attribute->getAttributeId() == ATTRIBUTE_FEATURED_UUID) {
+                        if ($attribute->getValue() == V_TRUE) {
+                            $featProducts[$product->getProductId()] = true;
+                        } else {
+                            $featProducts[$product->getProductId()] = false;
+                        }
                     }
                 }
             }
         }
-        $this->productsDbHelper->updateFeaturedProducts($productIds);
+        $this->productsDbHelper->updateFeaturedProducts($featProducts);
     }
 
     public function rebuildCategoriesRelations() {
@@ -169,13 +170,15 @@ class ProductsService {
     private function insertCategoryPath($mapCategoriesParents, $categoryId, $parentCategoryId, $level) {
         $this->categoriesDbHelper->insertCategoryPath($categoryId, $parentCategoryId, $level);
         if ($level != 0) {
-            $this->insertCategoryPath($mapCategoriesParents, $categoryId, $mapCategoriesParents[$categoryId], --$level);
+            $level = $level - 1;
+            $this->insertCategoryPath($mapCategoriesParents, $categoryId, $mapCategoriesParents[$categoryId], $level);
         }
     }
 
     private function getCategoryLevel($mapCategoriesParents, $categoryId, &$level) {
         if($mapCategoriesParents[$categoryId] != null) {
-            $this->getCategoryLevel($mapCategoriesParents, $mapCategoriesParents[$categoryId], ++$level);
+            $level = $level + 1;
+            $this->getCategoryLevel($mapCategoriesParents, $mapCategoriesParents[$categoryId], $level);
         }
     }
 }

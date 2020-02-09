@@ -1,4 +1,11 @@
 <?php
+if (!defined('DB_HOSTNAME')) {
+    require_once dirname(__FILE__) . '/../../config.php';
+}
+require_once dirname(__FILE__) . '/log.php';
+require_once dirname(__FILE__) . '/db.php';
+require_once dirname(__FILE__) . '/db/mpdo.php';
+
 require_once dirname(__FILE__) . '/omsi/util/globalConstants.php';
 require_once dirname(__FILE__) . '/omsi/helper/ProductsDbHelper.php';
 require_once dirname(__FILE__) . '/omsi/loader/ProductsLoader.php';
@@ -9,13 +16,12 @@ require_once dirname(__FILE__) . '/omsi/services/ProductsService.php';
 class Omsi {
     private static $instance;
     private $db;
-    private $registry;
     private $log;
 
     /**
      * @param object $registry Registry Object
      */
-    public static function get_instance($registry) {
+    public static function get_instance($registry = null) {
         if (is_null(static::$instance)) {
             static::$instance = new static($registry);
         }
@@ -24,18 +30,22 @@ class Omsi {
     }
 
     public function __construct($registry) {
-        $this->registry = $registry;
-        $this->log = $registry->get('log');
+        if (!is_null($registry)) {
+            $this->log = $registry->get('log');
+        } else {
+            // If registry is null, then this script runs from outside of OC engine. It is from CRON...
+            $this->log = new Log("omsi_cron.log");
+        }
+        $this->db = new \DB\mPDO(DB_HOSTNAME, DB_USERNAME, html_entity_decode(DB_PASSWORD, ENT_QUOTES, 'UTF-8'), DB_DATABASE, DB_PORT);
     }
 
     public function testReadProductName($model) {
         try {
-            $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
             $this->log->write("Great. You are connected!!!");
-            if (is_resource($db)) {
+            if (is_resource($this->db)) {
                 $this->log->write("Great. You are connected!!!");
             }
-            $result = $db->query("select * from oc_product limit 1");
+            $result = $this->db->query("select * from oc_product limit 1");
         } catch (Exception $e) {
             $this->log->write("Pi4al'ka. :( ");
         }
@@ -52,8 +62,7 @@ class Omsi {
     }
 
     public function сreateCustomer($сustomerData) {
-        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
-        $service = new CustomerService($db);
+        $service = new CustomerService($this->db);
 
         $lastName = $сustomerData['lastname'];
 
@@ -75,50 +84,43 @@ class Omsi {
     }
 
     public function deleteAllProducts() {
-        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
-        $productsService = new ProductsService($this->registry, $db);
+        $productsService = new ProductsService($this->db, $this->log);
         $productsService->deleteAllProducts();
     }
 
     public function synchronizeCategories() {
-        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
-        $productsService = new ProductsService($this->registry, $db);
+        $productsService = new ProductsService($this->db, $this->log);
         $productsService->syncCategories();
     }
 
-    public function synchronizeProducts($count) {
-        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
-        $productsService = new ProductsService($this->registry, $db);
+    public function synchronizeProducts($count = null) {
+        $productsService = new ProductsService($this->db, $this->log);
         $productsService->syncProducts($count);
     }
 
     public function synchronizeCustomers() {
-        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
-        $customerService = new CustomerService($db);
+        $customerService = new CustomerService($this->db);
         $customerService->synchronizeCustomers();
     }
 
     public function createCustomerOrder($orderData) {
-        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
-        $service = new OrderService($db);
+        $service = new OrderService($this->db);
         $result = $service->createOrder($orderData[0], $orderData[1]);
 
         return $orderData;
     }
 
     public function updateProducts($model) {
-        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
+
     }
 
     public function updateProductsCategories() {
-        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
-        $service = new ProductsService($this->registry, $db);
+        $service = new ProductsService($this->db, $this->log);
         $service->rebuildCategoriesRelations();
     }
 
     public function updateProduct($productId) {
-        $db = new \DB\mPDO('localhost', 'root', html_entity_decode('765b91475e', ENT_QUOTES, 'UTF-8'), "opencart_samopek", "3306");
-        $service = new ProductsService($this->registry, $db);
+        $service = new ProductsService($this->db, $this->log);
         $service->updateProduct($productId);
     }
 }

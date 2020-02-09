@@ -65,7 +65,7 @@ class SqlConstants {
         "SELECT cat.category_id, sam_cat.category_id as parent_category_id 
          FROM oc_category cat
          LEFT OUTER JOIN oc_ms_samopek_category sam_cat
-         ON (cat.image = sam_cat.ms_group_uuid)";
+         ON (cat.image = sam_cat.ms_group_uuid COLLATE utf8_unicode_ci)";
 
     const GET_ALL_NOT_SYNCED_CUSTOMERS =
         "SELECT cust.customer_id, cust.firstname, cust.lastname, cust.email, cust.telephone

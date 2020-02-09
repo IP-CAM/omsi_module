@@ -26,7 +26,6 @@ class ProductsLoader extends BaseLoader {
         foreach ($resultArray['rows'] as $row) {
             // Assume that there is always only one row in response
             $product = $this->fillData($row, $assortment);
-            $this->logger->write(var_export($product, true));
             return $product;
         }
         $this->logger->write("Cannot fetch product with " . $productModel . " from MoySklad.");
@@ -61,6 +60,7 @@ class ProductsLoader extends BaseLoader {
                 }
             }
         }
+
         $this->logger->write(count($productsForQuantityUpdate) . " products for quantity update:");
         $this->logger->write(implode(", ", array_keys($productsForQuantityUpdate)));
 
@@ -92,12 +92,15 @@ class ProductsLoader extends BaseLoader {
         $this->logger->write(implode(", ", array_keys($productsNotExist)));
 
         $products = array();
-
+        $this->logger->write("Q");
+        $this->logger->write(var_export($productsForQuantityUpdate, true));
+        $this->logger->write("V");
+        $this->logger->write(var_export($productsForVersionUpdate, true));
         $productsForUpdate = array_merge($productsForQuantityUpdate, $productsForVersionUpdate, $productsNotExist);
         $productsForUpdate = array_slice($productsForUpdate, 0, 200);
         $productsAmount = count($productsForUpdate);
         $this->logger->write("Merged result: " . $productsAmount . " products will be added or updated.");
-
+        $this->logger->write(var_export($productsForUpdate, true));
         echo "Merged result: " . $productsAmount . " products will be added or updated." . PHP_EOL;
 
         $k = 0;
@@ -194,7 +197,7 @@ class ProductsLoader extends BaseLoader {
         return $assortment;
     }
 
-    public function loadAllProducts($assortment, $requestedCount = 100) {
+    public function loadAllProducts($assortment, $requestedCount = 3000) {
         $products = [];
         $offset = 0;
         $i = 0;
@@ -215,7 +218,7 @@ class ProductsLoader extends BaseLoader {
         return $products;
     }
 
-    private function fillData($row, $assortment) {
+    private function fillData($row, $assortment, $attributesOnly = false) {
         $product = new Product();
         if (!array_key_exists(NAME, $row)) {
        //     $this->logger->error("Name is empty! Stop!");
@@ -244,14 +247,26 @@ class ProductsLoader extends BaseLoader {
             $product->setUuid($row[UUID]);
         }
 
+        if (!array_key_exists(ATTRIBUTES, $row)) {
+            //      $this->logger->debug("No attributes for product with code = " . $row[P_CODE]);
+        } else {
+            $attributes = array();
+
+            foreach ($row['attributes'] as $attribute) {
+                $attr = new Attribute();
+                $attr->setAttributeId($attribute[UUID]);
+                $attr->setValue($attribute[VALUE]);
+                $attributes[] = $attr;
+            }
+            $product->setAttributes($attributes);
+        }
+
         if (!array_key_exists(UPDATED, $row)) {
        //     $this->logger->error("Updated is empty! Stop!");
             die();
         } else {
             $product->setDateAdded($row[UPDATED]);
         }
-
-
 
         $product->setPrice($row[P_SALE_PRICES][0][VALUE] / 100);
         $product->setWeight($row[P_WEIGHT]);
@@ -272,19 +287,7 @@ class ProductsLoader extends BaseLoader {
 
         $this->grabImage($product, $row);
 
-        if (!array_key_exists(ATTRIBUTES, $row)) {
-      //      $this->logger->debug("No attributes for product with code = " . $row[P_CODE]);
-        } else {
-            $attributes = array();
 
-            foreach ($row['attributes'] as $attribute) {
-                $attr = new Attribute();
-                $attr->setAttributeId($attribute[UUID]);
-                $attr->setValue($attribute[VALUE]);
-                $attributes[] = $attr;
-            }
-            $product->setAttributes($attributes);
-        }
 
       //  $this->logger->info("Model = " . $row[P_CODE] . " Version = " . $row[MS_VERSION]);
 

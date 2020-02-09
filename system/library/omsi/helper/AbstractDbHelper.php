@@ -1,14 +1,11 @@
 <?php
 require_once dirname(__FILE__) . '/../util/SqlConstants.php';
-require_once dirname(__FILE__). '/../util/log4php/Logger.php';
 
 class AbstractDbHelper {
     private $db;
-    protected $logger;
 
     public function __construct($db) {
         $this->db = $db;
-        $this->logger = Logger::getLogger(static::class);
     }
 
     public function getDb() {

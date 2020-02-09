@@ -88,7 +88,7 @@ class ProductsDbHelper extends AbstractDbHelper {
         $this->insertProductIntoCategory2($product->getProductId(), $productCategory);
     }
 
-    public function updateFeaturedProducts($productsIds) {
+    public function updateFeaturedProducts($featProducts) {
         $result = $this->getDb()->query(SqlConstants::GET_FEATURED_MODULES_SETTING);
 
         if ($result->num_rows > 0) {
@@ -98,7 +98,26 @@ class ProductsDbHelper extends AbstractDbHelper {
                 if (!array_key_exists('product', $setting)) {
                     $setting['product'] = array();
                 }
-                $setting['product'] = $productsIds;
+
+                echo var_export ($setting['product'], true);
+                foreach ($featProducts as $featProductId=>$featProductVal) {
+                    $found = false;
+                    $foundKey = null;
+                    echo var_export($setting['product'], true);
+                    foreach ($setting['product'] as $settingfeatKey=>$settingfeatProduct) {
+                        if ($featProductId == $settingfeatProduct) {
+                            $found = true;
+                            $foundKey = $settingfeatKey;
+                            break;
+                        }
+                    }
+
+                    if ($featProductVal == true && $found == false) {
+                        $setting['product'][] = $featProductId;
+                    } else if ($featProductVal == false && $found == true) {
+                        unset($setting['product'][$foundKey]);
+                    }
+                }
 
                 $data = array();
                 $data[] = json_encode($setting);
@@ -316,7 +335,7 @@ class ProductsDbHelper extends AbstractDbHelper {
      * @param Product $product
      * @return bool
      */
-    public function updateProduct(Product $product) {
+    public function updateProduct(Product $product, $forceUpdate = false) {
         $data = array();
         $data[] = $product->getProductId();
         $result = $this->getDb()->query(SqlConstants::GET_VERSION_BY_PRODUCT_ID, $data);
@@ -325,7 +344,8 @@ class ProductsDbHelper extends AbstractDbHelper {
 
             return false;
         } else {
-            if ($product->getVersion() > $result->row['ms_version']) {
+            // MAKO!!! DB helper MUST NOT decide whether to update or not. It should be delegated to upper level.
+            if ($product->getVersion() > $result->row['ms_version'] || $forceUpdate) {
 
                 $data = array();
                 $data[] = $product->getPrice();
