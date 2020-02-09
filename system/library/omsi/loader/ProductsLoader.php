@@ -18,7 +18,7 @@ class ProductsLoader extends BaseLoader {
     public function loadProduct($productModel, $assortment = null) {
         $this->loadProductsAttributesMetadata();
         if ($assortment == null) {
-            $assortment = $this->loadAssortment();
+            $assortment = $this->loadStock();
         }
         $url = URL_BASE . URL_GET_PRODUCT . "?" . URL_PARAM_FILTER . URL_PARAM_CODE . $productModel;
         $this->logger->write($url);
@@ -43,7 +43,7 @@ class ProductsLoader extends BaseLoader {
         $productsForQuantityUpdate = array();
         $productsNotExist = array();
         // Load from MS
-        $quantitiesMS = $this->loadAssortment();
+        $quantitiesMS = $this->loadStock();
         // Read from DB
         $quantitiesDB = $this->productsHelper->getAllProductsWithQuantity();
 
@@ -143,7 +143,7 @@ class ProductsLoader extends BaseLoader {
     }
 
     public function loadProducts($count) {
-        $assortment = $this->loadAssortment();
+        $assortment = $this->loadStock();
         $this->loadProductsAttributesMetadata();
         $products = $this->loadAllProducts($assortment, $count);
         return $products;
@@ -164,6 +164,38 @@ class ProductsLoader extends BaseLoader {
         $urlTail = "&" . URL_PARAM_UPDATED_FROM . $date;
         return $this->loadAssortment($urlTail);
     }
+
+    public function loadStock($urlTail = "") {
+        $time_start = microtime(true);
+        $stock = [];
+        $offset = 0;
+        $i = 0;
+
+        do {
+            $url = URL_BASE . URL_GET_STOCK . "?" . STORE_ID . STORE_MAIN_UUID . "&" . URL_PARAM_OFFSET . $offset . "&" . URL_PARAM_LIMIT . $urlTail;
+            $resultArray = parent::load($url);
+            foreach ($resultArray['rows'] as $row) {
+                // Here in assortment results we have Services, Variants as well.
+                if ($row[META][META_TYPE] === META_TYPE_PRODUCT /*|| $row[META][META_TYPE] === META_TYPE_VARIANT*/) {
+                    if (!array_key_exists($row[P_CODE], $stock)) {
+                        if (array_key_exists(ASS_QUANTITY, $row)) {
+                            $stock[$row[P_CODE]] = $row[ASS_QUANTITY];
+                        } else {
+                            //     $this->logger->error("No quantity for model " . $row[P_CODE]);
+                        }
+
+                        //$this->logger->trace("Model " . $row[P_CODE] . " - Quantity " . $row[ASS_QUANTITY]);
+                    }
+                }
+            }
+            $offset += 100;
+            $i++;
+        } while ($i < 30);
+
+        $time_end = microtime(true);
+        return $stock;
+    }
+
 
     public function loadAssortment($urlTail = "") {
         $time_start = microtime(true);

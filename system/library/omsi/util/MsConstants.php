@@ -46,6 +46,7 @@
     define("URL_GET_CUSTOMER", "/entity/counterparty");
     define("URL_GET_ORGANIZATION", "/entity/organization");
     define("URL_GET_CUSTOMER_ORDER", "/entity/customerorder");
+    define("URL_GET_STOCK", "/report/stock/all");
 
     // URL params
     define("URL_PARAM_LIMIT", "limit=100");
@@ -54,7 +55,9 @@
     define("URL_PARAM_FILTER", "filter=");
     define("URL_PARAM_CODE", "code=");
     define("URL_PARAM_SEARCH", "search=");
+    define("STORE_ID", "store.id=");
 
     // UUIDs
     define("ATTRIBUTE_FEATURED_UUID", "817637a8-032e-11ea-0a80-04df000568e1");
+    define("STORE_MAIN_UUID", "36ba355a-e485-11e8-9109-f8fc0018a050");
 ?>
