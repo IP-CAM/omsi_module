@@ -93,7 +93,7 @@ class Omsi {
 
     public function synchronizeCategories() {
         $productsService = new ProductsService($this->db, $this->log);
-        $productsService->syncCatesynchronizeProductsgories();
+        $productsService->syncCategories();
     }
 
     public function synchronizeProducts($count = null) {
