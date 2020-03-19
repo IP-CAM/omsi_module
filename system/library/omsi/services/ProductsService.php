@@ -54,7 +54,19 @@ class ProductsService {
 
     public function syncProducts($count) {
         $this->log->write("Loading " . $count . " products...");
-        $products = $this->productsLoader->loadUpdatedProducts();
+        $products = $this->productsLoader->loadProducts($count);
+        $this->log->write("End Loading ");
+        foreach ($products as $product) {
+            $this->updateOrCreateProduct($product);
+        }
+
+        $this->updateFeaturedProducts($products);
+        $this->rebuildSeoUrls();
+    }
+
+    public function updateProducts() {
+        $this->log->write("Updating products...");
+        $products = $this->productsLoader->loadUpdatedProducts(false);
         $this->log->write("End Loading ");
         foreach ($products as $product) {
             $this->updateOrCreateProduct($product);

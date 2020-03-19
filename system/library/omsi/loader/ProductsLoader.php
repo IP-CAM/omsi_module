@@ -97,7 +97,7 @@ class ProductsLoader extends BaseLoader {
         $this->logger->write("V");
         $this->logger->write(var_export($productsForVersionUpdate, true));
         $productsForUpdate = array_merge($productsForQuantityUpdate, $productsForVersionUpdate, $productsNotExist);
-        $productsForUpdate = array_slice($productsForUpdate, 0, 200);
+        $productsForUpdate = array_slice($productsForUpdate, 0, 2000);
         $productsAmount = count($productsForUpdate);
         $this->logger->write("Merged result: " . $productsAmount . " products will be added or updated.");
         $this->logger->write(var_export($productsForUpdate, true));

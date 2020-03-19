@@ -13,6 +13,9 @@ require_once dirname(__FILE__) . '/omsi/services/CustomerService.php';
 require_once dirname(__FILE__) . '/omsi/services/OrderService.php';
 require_once dirname(__FILE__) . '/omsi/services/ProductsService.php';
 
+/**
+ * Class Omsi
+ */
 class Omsi {
     private static $instance;
     private $db;
@@ -90,12 +93,17 @@ class Omsi {
 
     public function synchronizeCategories() {
         $productsService = new ProductsService($this->db, $this->log);
-        $productsService->syncCategories();
+        $productsService->syncCatesynchronizeProductsgories();
     }
 
     public function synchronizeProducts($count = null) {
         $productsService = new ProductsService($this->db, $this->log);
         $productsService->syncProducts($count);
+    }
+
+    public function updateProducts() {
+        $productsService = new ProductsService($this->db, $this->log);
+        $productsService->updateProducts();
     }
 
     public function synchronizeCustomers() {
@@ -108,10 +116,6 @@ class Omsi {
         $result = $service->createOrder($orderData[0], $orderData[1]);
 
         return $orderData;
-    }
-
-    public function updateProducts($model) {
-
     }
 
     public function updateProductsCategories() {
