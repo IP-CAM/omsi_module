@@ -26,6 +26,7 @@
     define("META", "meta");
     define("META_TYPE", "type");
     define("META_TYPE_PRODUCT", "product");
+    define("META_TYPE_ASSORTMENT", "assortment");
     define("META_TYPE_VARIANT", "variant");
     define("VALUE", "value");
     define("PRODUCT_FOLDER", "productFolder");
@@ -37,6 +38,7 @@
     // URLs
     define("URL_BASE", "https://online.moysklad.ru/api/remap/1.1");
     define("URL_GET_PRODUCT", "/entity/product");
+    define("URL_GET_BUNDLES", "/entity/bundle");
     define("URL_GET_PRODUCT_METADATA", "/entity/product/metadata");
     define("URL_GET_UPDATED_PRODUCT", "/entity/product");
     define("URL_GET_ASSORTMENT", "/entity/assortment");
@@ -50,6 +52,7 @@
 
     // URL params
     define("URL_PARAM_LIMIT", "limit=100");
+    define("URL_PARAM_LIMIT1", "limit=1");
     define("URL_PARAM_OFFSET", "offset=");
     define("URL_PARAM_UPDATED_FROM", "updatedFrom=");
     define("URL_PARAM_FILTER", "filter=");

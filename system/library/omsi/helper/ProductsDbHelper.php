@@ -240,6 +240,15 @@ class ProductsDbHelper extends AbstractDbHelper {
         }
     }
 
+    public function getProductQuantity($productUuid) {
+        $data = array();
+        $data[] = $productUuid;
+        $result = $this->getDb()->query(SqlConstants::GET_PRODUCT_QUANTITY_BY_UUID, $data);
+        if ($result) {
+            return $result->row['quantity'];
+        }
+    }
+
     public function getProductVersion($productId) {
         $result = $this->getDb()->query(SqlConstants::GET_VERSION_BY_PRODUCT_ID, $productId);
         if ($result) {

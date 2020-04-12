@@ -55,6 +55,12 @@ class SqlConstants {
 
     const GET_VERSION_BY_PRODUCT_ID = "SELECT * from oc_ms_samopek_product where product_id = ?";
 
+    const GET_PRODUCT_QUANTITY_BY_UUID =
+        "SELECT product.quantity
+         FROM oc_ms_samopek_product prUuid, oc_product product
+         WHERE prUuid.ms_uuid = ?
+           AND prUuid.product_id = product.product_id";
+
     const GET_PRODUCTS_VERSIONS = "SELECT ms_id, ms_version from oc_ms_samopek_product";
 
     const GET_CATEGORY_ID_BY_UUID = "SELECT category_id from oc_ms_samopek_category where ms_group_uuid = ?";

@@ -17,6 +17,14 @@ class ParseUtils {
         return null;
     }
 
+    public static function getProductUuidFromComponent($component) {
+        if (array_key_exists(META_TYPE_ASSORTMENT, $component)) {
+            $href = $component[META_TYPE_ASSORTMENT][META][HREF];
+            return self::getLastSegment($href);
+        }
+        return null;
+    }
+
     private static function getLastSegment($href) {
         $res = explode("/", $href);
         return end($res);

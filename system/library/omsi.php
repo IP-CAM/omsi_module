@@ -101,13 +101,18 @@ class Omsi {
         $productsService->syncProducts($count);
     }
 
+    public function synchronizeBundles($count = null) {
+        $productsService = new ProductsService($this->db, $this->log);
+        $productsService->syncProducts($count);
+    }
+
     public function updateProducts() {
         $productsService = new ProductsService($this->db, $this->log);
         $productsService->updateProducts();
     }
 
     public function synchronizeCustomers() {
-        $customerService = new CustomerService($this->db);
+        $customerService = new CustomerService($this->db, $this->log);
         $customerService->synchronizeCustomers();
     }
 

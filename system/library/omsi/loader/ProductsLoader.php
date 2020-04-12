@@ -90,11 +90,8 @@ class ProductsLoader extends BaseLoader {
 
         $this->logger->write(count($productsNotExist) . " products not exists in DB:");
         $this->logger->write(implode(", ", array_keys($productsNotExist)));
-
         $products = array();
-        $this->logger->write("Q");
         $this->logger->write(var_export($productsForQuantityUpdate, true));
-        $this->logger->write("V");
         $this->logger->write(var_export($productsForVersionUpdate, true));
         $productsForUpdate = array_merge($productsForQuantityUpdate, $productsForVersionUpdate, $productsNotExist);
         $productsForUpdate = array_slice($productsForUpdate, 0, 2000);
@@ -121,6 +118,10 @@ class ProductsLoader extends BaseLoader {
             }
         }
 
+        // Update bundles
+        $bundles = $this->loadAllBundles();
+        $products = $products + $bundles;
+
         $this->logger->write("Prepared " . count($products) . " products to insert into DB.");
 
         return $products;
@@ -145,7 +146,9 @@ class ProductsLoader extends BaseLoader {
     public function loadProducts($count) {
         $assortment = $this->loadStock();
         $this->loadProductsAttributesMetadata();
-        $products = $this->loadAllProducts($assortment, $count);
+        $simpleproducts = $this->loadAllProducts($assortment, $count);
+        $bundles = $this->loadAllBundles($count);
+        $products = $simpleproducts + $bundles;
         return $products;
     }
 
@@ -229,14 +232,74 @@ class ProductsLoader extends BaseLoader {
         return $assortment;
     }
 
-    public function loadAllProducts($assortment, $requestedCount = 3000) {
+    public function loadAllBundles($requestedCount = 0) {
         $products = [];
         $offset = 0;
         $i = 0;
+        $url = URL_BASE . URL_GET_BUNDLES . "?" . URL_PARAM_OFFSET . $offset . "&" . URL_PARAM_LIMIT1;
+        $resultArray = parent::load($url);
+        $productsCount = $resultArray['meta']['size'];
+        if ($requestedCount == 0 || $requestedCount > $productsCount) {
+            $requestedCount = $productsCount;
+        }
+        $this->logger->write($requestedCount);
+
+        $count = 0;
+        do {
+            $url = URL_BASE . URL_GET_BUNDLES . "?" . URL_PARAM_OFFSET . $offset . "&" . URL_PARAM_LIMIT;
+            $this->logger->write($url);
+            $resultArray = parent::load($url);
+            $this->logger->write(var_export($resultArray, true));
+
+            foreach ($resultArray['rows'] as $row) {
+                $product = $this->fillData($row, null);
+                $product->setQuantity($this->getBundleQuantity($row));
+                $products[] = $product;
+                $count++;
+                if ($count >= $requestedCount) {
+                    break;
+                }
+            }
+
+            $offset += 100;
+            $i++;
+        } while ($count < $requestedCount);
+        return $products;
+    }
+
+    // Bundles always consist only of one product
+    private function getBundleQuantity($row) {
+        $this->logger->write("Bundle " . var_export($row[NAME]));
+        $resultArray = parent::load($row['components']['meta'][HREF]);
+        $productForBundle = $resultArray['rows'][0];
+        $quantityInBundle = $productForBundle['quantity'];
+        $this->logger->write("quantityInBundle " . $quantityInBundle);
+        $productUuid = ParseUtils::getProductUuidFromComponent($productForBundle);
+        $this->logger->write("productUuid " . $productUuid);
+        $poductQuantity = $this->productsHelper->getProductQuantity($productUuid);
+        $this->logger->write("poductQuantity " . $poductQuantity);
+        return intdiv($poductQuantity, $quantityInBundle);
+    }
+
+    public function loadAllProducts($assortment, $requestedCount = 0) {
+        $products = [];
+        $offset = 0;
+        $i = 0;
+        $url = URL_BASE . URL_GET_PRODUCT . "?" . URL_PARAM_OFFSET . $offset . "&" . URL_PARAM_LIMIT1;
+        $resultArray = parent::load($url);
+        $productsCount = $resultArray['meta']['size'];
+        if ($requestedCount == 0 || $requestedCount > $productsCount) {
+            $requestedCount = $productsCount;
+        }
+        $this->logger->write($requestedCount);
+
         $count = 0;
         do {
             $url = URL_BASE . URL_GET_PRODUCT . "?" . URL_PARAM_OFFSET . $offset . "&" . URL_PARAM_LIMIT;
+            $this->logger->write($url);
             $resultArray = parent::load($url);
+            $this->logger->write(var_export($resultArray, true));
+
             foreach ($resultArray['rows'] as $row) {
                 $products[] = $this->fillData($row, $assortment);
                 $count++;
@@ -244,6 +307,7 @@ class ProductsLoader extends BaseLoader {
                     break;
                 }
             }
+
             $offset += 100;
             $i++;
         } while ($count < $requestedCount);

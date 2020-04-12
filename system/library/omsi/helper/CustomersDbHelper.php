@@ -12,6 +12,8 @@ class CustomersDbHelper extends AbstractDbHelper {
         $result = $this->getDb()->query(SqlConstants::INSERT_INTO_MS_SAMOPEK_CUSTOMER, $params);
         if ($result) {
 
+        } else {
+
         }
     }
 
