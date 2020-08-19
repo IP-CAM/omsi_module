@@ -47,6 +47,9 @@ class ProductsDbHelper extends AbstractDbHelper {
         $data[] = $product->getImage();
         $data[] = $product->getPrice();
         $data[] = $product->getWeight();
+        $data[] = $product->getLength();
+        $data[] = $product->getWidth();
+        $data[] = $product->getHeight();
         $data[] = $product->getDateAdded();
         $result = $this->getDb()->query(SqlConstants::INSERT_INTO_PRODUCT, $data);
         if ($result) {

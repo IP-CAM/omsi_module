@@ -24,7 +24,7 @@ class Omsi {
     /**
      * @param object $registry Registry Object
      */
-    public static function get_instance($registry = null) {
+    public static function get_instance($registry = null): Omsi {
         if (is_null(static::$instance)) {
             static::$instance = new static($registry);
         }
@@ -65,7 +65,7 @@ class Omsi {
     }
 
     public function сreateCustomer($сustomerData) {
-        $service = new CustomerService($this->db);
+        $service = new CustomerService($this->db, $this->log);
 
         $lastName = $сustomerData['lastname'];
 

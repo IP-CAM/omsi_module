@@ -93,8 +93,7 @@ class ProductsLoader extends BaseLoader {
         $products = array();
         $this->logger->write(var_export($productsForQuantityUpdate, true));
         $this->logger->write(var_export($productsForVersionUpdate, true));
-        $productsForUpdate = array_merge($productsForQuantityUpdate, $productsForVersionUpdate, $productsNotExist);
-        $productsForUpdate = array_slice($productsForUpdate, 0, 2000);
+        $productsForUpdate = $productsForQuantityUpdate + $productsForVersionUpdate + $productsNotExist;
         $productsAmount = count($productsForUpdate);
         $this->logger->write("Merged result: " . $productsAmount . " products will be added or updated.");
         $this->logger->write(var_export($productsForUpdate, true));
@@ -353,6 +352,9 @@ class ProductsLoader extends BaseLoader {
                 $attr->setAttributeId($attribute[UUID]);
                 $attr->setValue($attribute[VALUE]);
                 $attributes[] = $attr;
+                if (ATTRIBUTE_SIZE_UUID == $attribute[UUID]) {
+                    $this->calculateAndSetProductSize($product, $attribute[VALUE], $row[P_WEIGHT]);
+                }
             }
             $product->setAttributes($attributes);
         }
@@ -388,6 +390,34 @@ class ProductsLoader extends BaseLoader {
       //  $this->logger->info("Model = " . $row[P_CODE] . " Version = " . $row[MS_VERSION]);
 
         return $product;
+    }
+
+    private function calculateAndSetProductSize(Product &$product, $size, $weight) {
+        $sizeArr = explode('x', $size);
+        if ($sizeArr[0] == 0 || $sizeArr[1] == 0 || $sizeArr[2] == 0) {
+            $this->logger->write("One of size parameters is 0. Volume will be used to identify width, height, length instead.");
+            if ($weight == 0) {
+                $this->logger->write("Weight is 0 as well. Length, width, height will be set to 0.");
+                $this->setProductSize($product, null, 0);
+            } else {
+                $elem = gmp_root($weight, 3);
+                $this->setProductSize($product, null, $elem);
+            }
+        } else {
+            $this->setProductSize($product, $sizeArr);
+        }
+    }
+
+    private function setProductSize(Product &$product, $sizeArr, $equalValue = 0) {
+        if (isset($sizeArr)) {
+            $product->setLength($sizeArr[0]);
+            $product->setWidth($sizeArr[1]);
+            $product->setHeight($sizeArr[2]);
+        } else {
+            $product->setLength($equalValue);
+            $product->setWidth($equalValue);
+            $product->setHeight($equalValue);
+        }
     }
 
     private function grabImage(Product &$product, $row) {

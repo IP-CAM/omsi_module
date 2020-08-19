@@ -62,5 +62,6 @@
 
     // UUIDs
     define("ATTRIBUTE_FEATURED_UUID", "817637a8-032e-11ea-0a80-04df000568e1");
+    define("ATTRIBUTE_SIZE_UUID", "c943b40e-d0b2-11e9-0a80-044e0014e47b");
     define("STORE_MAIN_UUID", "36ba355a-e485-11e8-9109-f8fc0018a050");
 ?>
