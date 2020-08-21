@@ -393,14 +393,24 @@ class ProductsLoader extends BaseLoader {
     }
 
     private function calculateAndSetProductSize(Product &$product, $size, $weight) {
-        $sizeArr = explode('x', $size);
+        $this->logger->write("Hello!!");
+        $this->logger->write(var_export($size, true));
+        $this->logger->write(var_export($weight, true));
+        $sizeArr = preg_split("/(x|\*|\x{0445})+/u", $size);
+        $this->logger->write(var_export($sizeArr, true));
+        foreach ($sizeArr as $key => $sizeArrElem) {
+            $sizeArrElem = preg_replace('/[,]+/', '.', $sizeArrElem);
+            $sizeArrElem = preg_replace('/[^0-9.]+/', '', $sizeArrElem);
+            $sizeArr[$key] = $sizeArrElem;
+        }
+        $this->logger->write(var_export($sizeArr, true));
         if ($sizeArr[0] == 0 || $sizeArr[1] == 0 || $sizeArr[2] == 0) {
             $this->logger->write("One of size parameters is 0. Volume will be used to identify width, height, length instead.");
             if ($weight == 0) {
                 $this->logger->write("Weight is 0 as well. Length, width, height will be set to 0.");
                 $this->setProductSize($product, null, 0);
             } else {
-                $elem = gmp_root($weight, 3);
+                $elem = pow($weight, 1/3);
                 $this->setProductSize($product, null, $elem);
             }
         } else {

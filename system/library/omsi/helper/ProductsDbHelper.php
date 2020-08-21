@@ -46,11 +46,12 @@ class ProductsDbHelper extends AbstractDbHelper {
         $data[] = $product->getQuantity() != null ? $product->getQuantity() : 0;
         $data[] = $product->getImage();
         $data[] = $product->getPrice();
-        $data[] = $product->getWeight();
-        $data[] = $product->getLength();
-        $data[] = $product->getWidth();
-        $data[] = $product->getHeight();
+        $data[] = $product->getWeight() != null ? $product->getWeight() : 0;
+        $data[] = $product->getLength() != null ? $product->getLength() : 0;
+        $data[] = $product->getWidth() != null ? $product->getWidth() : 0;
+        $data[] = $product->getHeight() != null ? $product->getHeight() : 0;
         $data[] = $product->getDateAdded();
+        $this->getLogger()->write(var_export($data, true));
         $result = $this->getDb()->query(SqlConstants::INSERT_INTO_PRODUCT, $data);
         if ($result) {
             $resultId = parent::getLastInsertedId();

@@ -19,7 +19,7 @@ class ProductsService {
 
     public function __construct($db, $log) {
         $this->log = $log;
-        $this->productsDbHelper = new ProductsDbHelper($db);
+        $this->productsDbHelper = new ProductsDbHelper($db, $log);
         $this->categoriesDbHelper = new CategoriesDbHelper($db);
         $this->seoUrlsDbHelper = new SeoUrlsDbHelper($db);
         $this->productsLoader = new ProductsLoader($db, $this->log);

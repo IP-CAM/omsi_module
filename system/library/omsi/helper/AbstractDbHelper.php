@@ -3,9 +3,11 @@ require_once dirname(__FILE__) . '/../util/SqlConstants.php';
 
 class AbstractDbHelper {
     private $db;
+    private $logger;
 
-    public function __construct($db) {
+    public function __construct($db, $logger = null) {
         $this->db = $db;
+        $this->logger = $logger;
     }
 
     public function getDb() {
@@ -19,5 +21,21 @@ class AbstractDbHelper {
 
     public function closeTransaction() {
         $this->db->closeTransaction();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @param mixed $logger
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
     }
 }
