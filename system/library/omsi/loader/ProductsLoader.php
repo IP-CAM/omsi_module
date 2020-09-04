@@ -396,7 +396,7 @@ class ProductsLoader extends BaseLoader {
         $this->logger->write("Hello!!");
         $this->logger->write(var_export($size, true));
         $this->logger->write(var_export($weight, true));
-        $sizeArr = preg_split("/(x|\*|\x{0445})+/u", $size);
+        $sizeArr = preg_split("/(x|\*|\x{0445}|\x{00D7})+/u", $size);
         $this->logger->write(var_export($sizeArr, true));
         foreach ($sizeArr as $key => $sizeArrElem) {
             $sizeArrElem = preg_replace('/[,]+/', '.', $sizeArrElem);
@@ -404,31 +404,14 @@ class ProductsLoader extends BaseLoader {
             $sizeArr[$key] = $sizeArrElem;
         }
         $this->logger->write(var_export($sizeArr, true));
-        if (!isset($sizeArr[0]) || $sizeArr[0] == 0 ||
-            !isset($sizeArr[1]) || $sizeArr[1] == 0 ||
-            !isset($sizeArr[2]) || $sizeArr[2] == 0) {
-            $this->logger->write("One of size parameters is null or 0. Volume will be used to identify width, height, length instead.");
-            if ($weight == 0) {
-                $this->logger->write("Weight is 0 as well. Length, width, height will be set to 0.");
-                $this->setProductSize($product, null, 0);
-            } else {
-                $elem = pow($weight, 1/3);
-                $this->setProductSize($product, null, $elem);
-            }
-        } else {
-            $this->setProductSize($product, $sizeArr);
-        }
+        $this->setProductSize($product, $sizeArr);
     }
 
     private function setProductSize(Product &$product, $sizeArr, $equalValue = 0) {
         if (isset($sizeArr)) {
-            $product->setLength($sizeArr[0]);
-            $product->setWidth($sizeArr[1]);
-            $product->setHeight($sizeArr[2]);
-        } else {
-            $product->setLength($equalValue);
-            $product->setWidth($equalValue);
-            $product->setHeight($equalValue);
+            $product->setLength(!isset($sizeArr[0]) ? null : $sizeArr[0]);
+            $product->setWidth(!isset($sizeArr[1]) ? null : $sizeArr[1]);
+            $product->setHeight(!isset($sizeArr[2]) ? null : $sizeArr[2]);
         }
     }
 
