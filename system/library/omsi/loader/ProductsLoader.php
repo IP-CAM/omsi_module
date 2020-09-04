@@ -404,8 +404,10 @@ class ProductsLoader extends BaseLoader {
             $sizeArr[$key] = $sizeArrElem;
         }
         $this->logger->write(var_export($sizeArr, true));
-        if ($sizeArr[0] == 0 || $sizeArr[1] == 0 || $sizeArr[2] == 0) {
-            $this->logger->write("One of size parameters is 0. Volume will be used to identify width, height, length instead.");
+        if (!isset($sizeArr[0]) || $sizeArr[0] == 0 ||
+            !isset($sizeArr[1]) || $sizeArr[1] == 0 ||
+            !isset($sizeArr[2]) || $sizeArr[2] == 0) {
+            $this->logger->write("One of size parameters is null or 0. Volume will be used to identify width, height, length instead.");
             if ($weight == 0) {
                 $this->logger->write("Weight is 0 as well. Length, width, height will be set to 0.");
                 $this->setProductSize($product, null, 0);
